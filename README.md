@@ -2,15 +2,9 @@
 Useful tools for assembling the genome
 
 ## Tools list
-- remove-containments - filters containment overlaps
+- (filter-contained)[help/filter-contained.md] - filters containment overlaps
 
-## Requirements
+## General requirements
 - make
 - gcc
-
-## Installation
-
-```
-make
-```
 
