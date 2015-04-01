@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
   if (argc == 2) {
     in = fopen(argv[1], "r");
     if (in == nullptr) {
-      cerr << "Error ocurred while opening file '%" << argv[1] << ";" << endl;
+      cerr << "Error ocurred while opening file '" << argv[1] << "'" << endl;
       exit(1);
     }
   }
