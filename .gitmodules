@@ -1,0 +1,3 @@
+[submodule "lib/afgreader"]
+	path = lib/afgreader
+	url = git@github.com:mariokostelac/afgreader.git
