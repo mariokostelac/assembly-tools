@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
   Overlap* curr_overlap;
   while ((curr_overlap = reader->next_overlap()) != nullptr) {
     overlaps.push_back(curr_overlap);
+    read++;
   }
 
   cerr << "Read " << read << " overlaps\n" << endl;
