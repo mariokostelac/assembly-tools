@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -g -Wall -std=c++11 -O2 -I ./lib -I ./src -I ./
 LDFLAGS=
 
-default: bin/filter_contained
+default: bin/filter-contained
 
 prepare:
 
@@ -18,7 +18,7 @@ obj/filter_contained.o: src/filter-contained/filter_contained.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-bin/filter_contained: obj/filter_contained.o obj/afgreader/reader.o obj/afgreader/overlap.o
+bin/filter-contained: obj/filter_contained.o obj/afgreader/reader.o obj/afgreader/overlap.o
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 
