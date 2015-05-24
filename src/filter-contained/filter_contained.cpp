@@ -1,27 +1,24 @@
 
-#include "amos/reader.h"
+#include "afgreader/src/reader.h"
 
-#include <cstdio>
 #include <iostream>
 #include <vector>
 
 using namespace std;
+using AMOS::Overlap;
+using AMOS::Reader;
 
 int main(int argc, char **argv) {
 
-  FILE* in = stdin;
-
-  if (argc == 2) {
-    in = fopen(argv[1], "r");
-    if (in == nullptr) {
-      cerr << "Error ocurred while opening file '" << argv[1] << "'" << endl;
-      exit(1);
-    }
-  }
-
-  vector<const AMOS::Overlap*> overlaps;
-  int read = get_overlaps(overlaps, in);
+  vector<const Overlap*> overlaps;
+  int read = 0;
   int skip = 0;
+
+  Reader* reader = new Reader(cin);
+  Overlap* curr_overlap;
+  while ((curr_overlap = reader->next_overlap()) != nullptr) {
+    overlaps.push_back(curr_overlap);
+  }
 
   cerr << "Read " << read << " overlaps\n" << endl;
 
@@ -40,6 +37,4 @@ int main(int argc, char **argv) {
   }
 
   cerr << "Filtered " << skip << " overlaps" << endl;
-
-  fclose(in);
 }
