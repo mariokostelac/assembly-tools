@@ -1,6 +1,7 @@
 
 #include "afgreader/src/reader.h"
 #include "graph/edges_set.cpp"
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <memory>
