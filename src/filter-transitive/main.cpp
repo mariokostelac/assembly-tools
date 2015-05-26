@@ -5,8 +5,10 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <string>
 
 using std::shared_ptr;
+using std::string;
 using AMOS::Overlap;
 using AMOS::Read;
 using AMOS::Reader;
@@ -152,28 +154,28 @@ int read_from_stream(istream& input, map<uint32_t, shared_ptr<Read>>& reads, vec
 }
 
 int main(int argc, char **argv) {
-  vector<istream*> input_streams;
+  vector<string> input_streams;
 
+  for (int i = 1; i < argc; ++i) {
+    input_streams.emplace_back(argv[i]);
+  }
   if (argc == 2) {
-    input_streams.emplace_back(&cin);
-  } else {
-    for (int i = 1; i < argc; ++i) {
-      istream* in_stream;
-      if (strcmp(argv[i], "-") == 0) {
-        in_stream = &cin;
-      } else {
-        in_stream = new ifstream(argv[i]);
-      }
-
-      input_streams.emplace_back(&cin);
-    }
+    input_streams.emplace_back("-");
   }
 
   vector<shared_ptr<Overlap>> overlaps;
   map<uint32_t, shared_ptr<Read>> reads;
 
-  for (auto in_stream : input_streams) {
-    read_from_stream(*in_stream, reads, overlaps);
+  for (auto stream_name : input_streams) {
+    cerr << "Starting reading from " << stream_name << endl;
+    if (stream_name == "-") {
+      read_from_stream(cin, reads, overlaps);
+    } else {
+      fstream file(stream_name);
+      read_from_stream(file, reads, overlaps);
+      file.close();
+    }
+    cerr << "Finished reading from " << stream_name << endl;
   }
 
   cerr << "Read " << overlaps.size() << " reads" << endl;
