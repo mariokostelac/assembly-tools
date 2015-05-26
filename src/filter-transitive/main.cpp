@@ -175,12 +175,12 @@ int main(int argc, char **argv) {
       fstream file(stream_name);
       read = read_from_stream(file, reads, overlaps);
       file.close();
-    }
     cerr << "Read " << read << " objects from " << stream_name << endl;
+    }
   }
 
-  cerr << "Read " << overlaps.size() << " reads" << endl;
-  cerr << "Read " << reads.size() << " overlaps" << endl;
+  cerr << "Read " << reads.size() << " reads" << endl;
+  cerr << "Read " << overlaps.size() << " overlaps" << endl;
 
   fill_reads(overlaps, reads);
 
