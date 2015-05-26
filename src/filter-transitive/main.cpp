@@ -168,14 +168,15 @@ int main(int argc, char **argv) {
 
   for (auto stream_name : input_streams) {
     cerr << "Starting reading from " << stream_name << endl;
+    int read = 0;
     if (stream_name == "-") {
-      read_from_stream(cin, reads, overlaps);
+      read = read_from_stream(cin, reads, overlaps);
     } else {
       fstream file(stream_name);
-      read_from_stream(file, reads, overlaps);
+      read = read_from_stream(file, reads, overlaps);
       file.close();
     }
-    cerr << "Finished reading from " << stream_name << endl;
+    cerr << "Read " << read << " objects from " << stream_name << endl;
   }
 
   cerr << "Read " << overlaps.size() << " reads" << endl;
