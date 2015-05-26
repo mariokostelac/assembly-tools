@@ -1,6 +1,8 @@
 
 #include "afgreader/src/reader.h"
 #include "graph/edges_set.cpp"
+#include <fstream>
+#include <iostream>
 #include <memory>
 
 using std::shared_ptr;
@@ -109,49 +111,77 @@ int get_non_transitives(vector<shared_ptr<Overlap>>* dst_container, vector<share
   return valid;
 }
 
-void fill_reads(map<uint32_t, shared_ptr<Read>>& reads, vector<shared_ptr<Overlap>>& overlaps) {
+void fill_reads(vector<shared_ptr<Overlap>>& overlaps, map<uint32_t, shared_ptr<Read>>& reads) {
   for (auto o : overlaps) {
     o->a = reads[o->a_id];
     o->b = reads[o->b_id];
   }
 }
 
-int main(int argc, char **argv) {
-  vector<shared_ptr<Overlap>> edges;
-  map<uint32_t, shared_ptr<Read>> nodes;
+int read_from_stream(istream& input, map<uint32_t, shared_ptr<Read>>& reads, vector<shared_ptr<Overlap>>& edges) {
+  Reader reader(input);
 
-  Reader* reader = new Reader(cin);
-
-  while (reader->has_next()) {
-    if (reader->next_type() == AMOS::OVERLAP) {
+  int stored = 0;
+  while (reader.has_next()) {
+    if (reader.next_type() == AMOS::OVERLAP) {
       Overlap* overlap = new Overlap();
-      if (!reader->next(overlap)) {
+      if (!reader.next(overlap)) {
         cerr << "Error while reading overlap" << endl;
         continue;
       }
 
       edges.emplace_back(shared_ptr<Overlap>(overlap));
-    } else if (reader->next_type() == AMOS::READ) {
+      stored++;
+    } else if (reader.next_type() == AMOS::READ) {
       Read *read = new Read();
-      if (!reader->next(read)) {
+      if (!reader.next(read)) {
         cerr << "Error while reading overlap" << endl;
         continue;
       }
 
-      nodes[read->iid] = shared_ptr<Read>(read);
+      reads[read->iid] = shared_ptr<Read>(read);
+      stored++;
     } else {
-      reader->skip_next();
+      reader.skip_next();
       continue;
     }
   }
 
-  cerr << "Read " << nodes.size() << " reads" << endl;
-  cerr << "Read " << edges.size() << " overlaps" << endl;
+  return stored;
+}
 
-  fill_reads(nodes, edges);
+int main(int argc, char **argv) {
+  vector<istream*> input_streams;
+
+  if (argc == 2) {
+    input_streams.emplace_back(&cin);
+  } else {
+    for (int i = 1; i < argc; ++i) {
+      istream* in_stream;
+      if (strcmp(argv[i], "-") == 0) {
+        in_stream = &cin;
+      } else {
+        in_stream = new ifstream(argv[i]);
+      }
+
+      input_streams.emplace_back(&cin);
+    }
+  }
+
+  vector<shared_ptr<Overlap>> overlaps;
+  map<uint32_t, shared_ptr<Read>> reads;
+
+  for (auto in_stream : input_streams) {
+    read_from_stream(*in_stream, reads, overlaps);
+  }
+
+  cerr << "Read " << overlaps.size() << " reads" << endl;
+  cerr << "Read " << reads.size() << " overlaps" << endl;
+
+  fill_reads(overlaps, reads);
 
   vector<shared_ptr<Overlap>> non_transitive_edges;
-  get_non_transitives(&non_transitive_edges, edges);
+  get_non_transitives(&non_transitive_edges, overlaps);
 
-  cerr << "Filtered " << (edges.size() - non_transitive_edges.size()) << " overlaps" << endl;
+  cerr << "Filtered " << (overlaps.size() - non_transitive_edges.size()) << " overlaps" << endl;
 }
