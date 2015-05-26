@@ -21,15 +21,24 @@ int main(int argc, char **argv) {
 
   Reader* reader = new Reader(cin);
 
-  Overlap* overlap;
-  while ((overlap = reader->next_overlap()) != nullptr) {
-    if (is_contained(*overlap)) {
-      ++skip;
-      cerr << "Skipping overlap (" << overlap->read1 << ", " << overlap->read2 << ")" << endl;
+  while (reader->has_next()) {
+    Overlap overlap;
+    if (reader->next_type() != AMOS::OVERLAP) {
       continue;
     }
 
-    cout << *overlap;
+    if (!reader->next(&overlap)) {
+      cerr << "Error while reading overlap" << endl;
+      continue;
+    }
+
+    if (is_contained(overlap)) {
+      ++skip;
+      cerr << "Skipping overlap (" << overlap.read1 << ", " << overlap.read2 << ")" << endl;
+      continue;
+    }
+
+    cout << overlap;
     read++;
   }
 
