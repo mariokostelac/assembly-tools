@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
   while (reader->has_next()) {
     Overlap overlap;
     if (reader->next_type() != AMOS::OVERLAP) {
+      reader->skip_next();
       continue;
     }
 
