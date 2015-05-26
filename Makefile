@@ -18,7 +18,11 @@ obj/filter_contained.o: src/filter-contained/filter_contained.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-bin/filter-contained: obj/filter_contained.o obj/afgreader/reader.o obj/afgreader/overlap.o
+obj/filter_contained_main.o: src/filter-contained/main.cpp
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c -o $@ $^
+
+bin/filter-contained: obj/filter_contained.o obj/filter_contained_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 
