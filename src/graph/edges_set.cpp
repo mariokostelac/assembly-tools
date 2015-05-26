@@ -1,46 +1,48 @@
 #include <map>
+#include <list>
 #include <utility>
 
-template <typename K, typename V>
-class EdgesSet {
-  private:
-    std::map<std::pair<K, K>, V> edges;
+namespace Graph {
 
-  public:
-    uint32_t count(K n1, K n2);
-    V edge_info(K n1, K n2);
-    void add(K n1, K n2, V edge_info);
-    uint32_t size();
-    typename std::map<std::pair<K, K>, V>::iterator begin();
-    typename std::map<std::pair<K, K>, V>::iterator end();
-};
+  template<typename T>
+    using Map = std::map<int, std::list<std::pair<int, T>>>;
 
-template <class K, class V>
-uint32_t EdgesSet<K, V>::count(K n1, K n2) {
-  return edges.count(make_pair(n1, n2));
-}
+  template <typename T>
+    class EdgesSet {
+      public:
+      void add(int src, int dst, T edge_info);
+      std::list<std::pair<int, T>>& operator[](int src);
 
-template <class K, class V>
-V EdgesSet<K, V>::edge_info(K n1, K n2) {
-  return edges[std::make_pair(n1, n2)];
-}
+      uint32_t size();
+      typename Map<T>::iterator begin();
+      typename Map<T>::iterator end();
 
-template <class K, class V>
-void EdgesSet<K, V>::add(K n1, K n2, V edge_info) {
-  edges[std::make_pair(n1, n2)] = edge_info;
-}
+      private:
+        Map<T> edges_;
+    };
 
-template <class K, class V>
-uint32_t EdgesSet<K, V>::size() {
-  return edges.size();
-}
+  template <typename T>
+    std::list<std::pair<int, T>>& EdgesSet<T>::operator[](int src) {
+      return edges_[src];
+    }
 
-template <class K, class V>
-typename std::map<std::pair<K, K>, V>::iterator EdgesSet<K, V>::begin() {
-  return edges.begin();
-}
+  template <typename T>
+    void EdgesSet<T>::add(int src, int dst, T edge_info) {
+      edges_[src].emplace_back(make_pair(dst, edge_info));
+    }
 
-template <class K, class V>
-typename std::map<std::pair<K, K>, V>::iterator EdgesSet<K, V>::end() {
-  return edges.end();
+  template <typename T>
+    uint32_t EdgesSet<T>::size() {
+      return edges_.size();
+    }
+
+  template <typename T>
+    typename Map<T>::iterator EdgesSet<T>::begin() {
+      return edges_.begin();
+    }
+
+  template <typename T>
+    typename Map<T>::iterator EdgesSet<T>::end() {
+      return edges_.end();
+    }
 }

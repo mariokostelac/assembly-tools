@@ -2,9 +2,7 @@ CC = g++
 CFLAGS = -g -Wall -std=c++11 -O2 -I ./lib -I ./src -I ./
 LDFLAGS=
 
-default: bin/filter-contained
-
-prepare:
+default: bin/filter-contained bin/filter-transitive
 
 obj/afgreader/reader.o: lib/afgreader/src/reader.cpp
 	mkdir -p obj/afgreader
@@ -22,7 +20,15 @@ obj/filter_contained_main.o: src/filter-contained/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
+obj/filter_transitive_main.o: src/filter-transitive/main.cpp
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c -o $@ $^
+
 bin/filter-contained: obj/filter_contained.o obj/filter_contained_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
+	mkdir -p bin
+	$(CC) $(LDFLAGS) -o $@ $^
+
+bin/filter-transitive: obj/filter_transitive_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 

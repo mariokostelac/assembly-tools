@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 
     if (is_contained(overlap)) {
       ++skip;
-      cerr << "Skipping overlap (" << overlap.read1 << ", " << overlap.read2 << ")" << endl;
+      cerr << "Skipping overlap (" << overlap.a_id << ", " << overlap.b_id << ")" << endl;
       continue;
     }
 
