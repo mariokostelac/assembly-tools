@@ -15,7 +15,6 @@ bool is_contained(const Overlap& o) {
 }
 
 int main(int argc, char **argv) {
-
   int read = 0;
   int skip = 0;
 
