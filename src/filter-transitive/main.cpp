@@ -39,7 +39,7 @@ int read_from_stream(istream& input, map<uint32_t, shared_ptr<Read>>& reads, vec
     } else if (reader.next_type() == AMOS::READ) {
       Read *read = new Read();
       if (!reader.next(read)) {
-        cerr << "Error while reading overlap" << endl;
+        cerr << "Error while reading read" << endl;
         continue;
       }
 
