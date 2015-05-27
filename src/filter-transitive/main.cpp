@@ -188,4 +188,8 @@ int main(int argc, char **argv) {
   get_non_transitives(&non_transitive_edges, overlaps);
 
   cerr << "Filtered " << (overlaps.size() - non_transitive_edges.size()) << " overlaps" << endl;
+
+  for (auto& o : non_transitive_edges) {
+    cout << *o;
+  }
 }
