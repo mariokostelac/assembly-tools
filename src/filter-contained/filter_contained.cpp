@@ -39,6 +39,7 @@ uint32_t get_non_contained(vector<Overlap*>* dst, const vector<Overlap*>& overla
     }
 
     dst->push_back(o);
+    ++added;
   }
 
   return added;
