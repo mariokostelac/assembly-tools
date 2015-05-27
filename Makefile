@@ -20,6 +20,10 @@ obj/filter_contained_main.o: src/filter-contained/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
+obj/filter_transitive.o: src/filter-transitive/filter_transitive.cpp
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c -o $@ $^
+
 obj/filter_transitive_main.o: src/filter-transitive/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
@@ -28,7 +32,7 @@ bin/filter-contained: obj/filter_contained.o obj/filter_contained_main.o obj/afg
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 
-bin/filter-transitive: obj/filter_transitive_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
+bin/filter-transitive: obj/filter_transitive.o obj/filter_transitive_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 
