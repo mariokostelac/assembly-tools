@@ -17,10 +17,6 @@ using Graph::EdgesSet;
 const double EPSILON = 0.15;
 const double ALPHA = 3;
 
-bool compare_edges(const pair<int, shared_ptr<Overlap>>& lhs, const pair<int, shared_ptr<Overlap>>& rhs) {
-  return lhs.first < rhs.first;
-}
-
 inline bool eq(double x, double y, double eps) {
   return y <= x + eps && x <= y + eps;
 }
@@ -69,7 +65,7 @@ int get_non_transitives(vector<shared_ptr<Overlap>>* dst_container, vector<share
   }
 
   // sort so we can reduce complexity on iterating edges.
-  for (auto unsorted : edges_set) {
+  for (auto& unsorted : edges_set) {
     unsorted.second.sort();
   }
 
