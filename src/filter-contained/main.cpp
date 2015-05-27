@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
   get_non_contained(&filtered, overlaps);
 
   for (auto o : filtered) {
-    cout << o;
+    cout << *o;
   }
 
   cerr << "Written " << filtered.size() << " overlaps. Ratio: " << filtered.size() / (1.0 * overlaps.size()) << endl;
