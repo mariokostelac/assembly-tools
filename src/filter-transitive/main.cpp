@@ -95,6 +95,10 @@ int get_non_transitives(vector<shared_ptr<Overlap>>* dst_container, vector<share
       }
       if (it1->first == it2->first) {
         if (is_transitive(*overlap, *it1->second, *it2->second)) {
+          cerr << "Filtering out (" << src << ", " << dst << ") because transitive to "
+            << "(" << it1->second->a_id << ", " << it1->second->b_id << "), "
+            << "(" << it2->second->a_id << ", " << it2->second->b_id << ")"
+            << endl;
           transitive = true;
         }
         ++it1;
