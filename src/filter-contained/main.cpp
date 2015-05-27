@@ -38,6 +38,5 @@ int main(int argc, char **argv) {
     cout << o;
   }
 
-  cerr << "Written " << filtered.size() << " overlaps. " << (filtered.size() / overlaps.size()) << endl;
-
+  cerr << "Written " << filtered.size() << " overlaps. Ratio: " << filtered.size() / (1.0 * overlaps.size()) << endl;
 }
