@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
   for (int i = 1; i < argc; ++i) {
     input_streams.emplace_back(argv[i]);
   }
-  if (argc == 2) {
+  if (argc < 2) {
     input_streams.emplace_back("-");
   }
 
