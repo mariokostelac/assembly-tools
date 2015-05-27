@@ -9,8 +9,7 @@ B    -----
 ```
 
 After running `filter-contained < overlaps.afg > overlaps.filtered.afg`,
-`overlaps.filtered.afg` will contain of all overlaps that do not
-coincidence with read B.
+`overlaps.filtered.afg` will contain all overlaps not coincident with with read B.
 
 ## Installation
 ```
