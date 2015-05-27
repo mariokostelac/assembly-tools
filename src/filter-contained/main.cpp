@@ -1,13 +1,18 @@
 
 #include "filter_contained.h"
 #include "afgreader/src/reader.h"
+#include <iostream>
 #include <vector>
 
+using std::cerr;
+using std::cin;
 using std::vector;
 using AMOS::Reader;
 using AMOS::Overlap;
 
 int main(int argc, char **argv) {
+  ios_base::sync_with_stdio(false);
+
   int read = 0;
 
   Reader* reader = new Reader(cin);
