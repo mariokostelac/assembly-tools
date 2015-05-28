@@ -1,17 +1,17 @@
 #include <map>
-#include <list>
+#include <vector>
 #include <utility>
 
 namespace Graph {
 
   template<typename T>
-    using Map = std::map<int, std::list<std::pair<int, T>>>;
+    using Map = std::map<int, std::vector<std::pair<int, T>>>;
 
   template <typename T>
     class EdgesSet {
       public:
       void add(int src, int dst, T edge_info);
-      std::list<std::pair<int, T>>& operator[](int src);
+      std::vector<std::pair<int, T>>& operator[](int src);
 
       uint32_t size();
       typename Map<T>::iterator begin();
@@ -22,7 +22,7 @@ namespace Graph {
     };
 
   template <typename T>
-    std::list<std::pair<int, T>>& EdgesSet<T>::operator[](int src) {
+    std::vector<std::pair<int, T>>& EdgesSet<T>::operator[](int src) {
       return edges_[src];
     }
 

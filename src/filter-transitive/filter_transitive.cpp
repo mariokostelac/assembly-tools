@@ -1,6 +1,7 @@
 
 #include "filter_transitive.h"
 #include "graph/edges_set.cpp"
+#include <algorithm>
 
 using Graph::EdgesSet;
 
@@ -56,7 +57,7 @@ int get_non_transitives(vector<shared_ptr<Overlap>>* dst_container, vector<share
 
   // sort so we can reduce complexity on iterating edges.
   for (auto& unsorted : edges_set) {
-    unsorted.second.sort();
+    sort(unsorted.second.begin(), unsorted.second.end());
   }
 
   // we are iterating all (x, y), (x, a), (y, a) in hope that we will find that
