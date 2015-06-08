@@ -40,7 +40,7 @@ obj/overlap2dot_main.o: src/overlap2dot/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-bin/filter-contained: obj/filter_contained_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
+bin/filter-contained: obj/filter_contained_main.o obj/afgreader/reader.o obj/afgreader/overlap.o obj/mhap/parser.o obj/mhap/overlap.o
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 

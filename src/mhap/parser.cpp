@@ -3,7 +3,7 @@
 
 namespace MHAP {
 
-  int read_overlaps(istream& input, vector<Overlap*>& overlaps) {
+  int read_overlaps(istream& input, vector<Overlap*>* overlaps) {
     int read = 0;
 
     uint32_t a_id;
@@ -29,7 +29,7 @@ namespace MHAP {
           a_fwd, a_lo, a_hi, a_len,
           b_fwd, b_lo, b_hi, b_len);
 
-      overlaps.push_back(overlap);
+      overlaps->push_back(overlap);
       read++;
     }
 

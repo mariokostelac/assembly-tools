@@ -11,7 +11,7 @@ using std::vector;
 
 namespace MHAP {
 
-  int read_overlaps(istream& input, vector<Overlap*>& overlaps);
+  int read_overlaps(istream& input, vector<Overlap*>* overlaps);
 
 }
 

@@ -3,6 +3,7 @@
 #define _MHAP_OVERLAP_H
 
 #include <cstdint>
+#include <iostream>
 
 namespace MHAP {
 
@@ -22,6 +23,8 @@ namespace MHAP {
       bool use_prefix(uint32_t read_id) const;
       bool use_suffix(uint32_t read_id) const;
 
+      friend std::ostream& operator << (std::ostream &o, const MHAP::Overlap& overlap);
+
     private:
       uint32_t a_id;
       uint32_t b_id;
@@ -37,6 +40,7 @@ namespace MHAP {
       uint32_t b_len;
   };
 
+  std::ostream& operator << (std::ostream &o, const MHAP::Overlap& overlap);
 }
 
 #endif

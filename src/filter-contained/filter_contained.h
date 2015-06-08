@@ -15,14 +15,14 @@ uint32_t get_non_contained(std::vector<T>* dst, const std::vector<T>& overlaps, 
   for (auto o : overlaps) {
     //    --------
     // --------------
-    if (o->contained(o->read1_id())) {
+    if (o->use_prefix(o->read1_id()) && o->use_suffix(o->read1_id())) {
       removed[o->read1_id()]++;
       continue;
     }
 
     // ------------->
     //    ------->
-    if (o->contained(o->read2_id())) {
+    if (o->use_prefix(o->read2_id()) && o->use_suffix(o->read2_id())) {
       removed[o->read2_id()]++;
       continue;
     }

@@ -10,7 +10,7 @@
 using std::string;
 using std::vector;
 
-int read_amos_overlaps(istream& input, vector<AMOS::Overlap*>& overlaps) {
+int read_amos_overlaps(istream& input, vector<AMOS::Overlap*>* overlaps) {
   AMOS::Reader reader(input);
 
   int stored = 0;
@@ -22,7 +22,7 @@ int read_amos_overlaps(istream& input, vector<AMOS::Overlap*>& overlaps) {
         continue;
       }
 
-      overlaps.emplace_back(overlap);
+      overlaps->emplace_back(overlap);
       stored++;
     } else {
       reader.skip_next();
@@ -63,9 +63,9 @@ int main(int argc, char **argv) {
     }
 
     if (format == "afg") {
-      read = read_amos_overlaps(*input, overlaps_afg);
+      read = read_amos_overlaps(*input, &overlaps_afg);
     } else if (format == "mhap") {
-      read = MHAP::read_overlaps(*input, overlaps_mhap);
+      read = MHAP::read_overlaps(*input, &overlaps_mhap);
     }
 
     cerr << "Read " << read << " objects from " << stream_name << endl;
