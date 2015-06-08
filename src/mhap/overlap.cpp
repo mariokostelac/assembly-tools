@@ -22,9 +22,9 @@ namespace MHAP {
 
   bool Overlap::use_suffix(uint32_t read_id) const {
     if (read_id == a_id) {
-      return a_hi == a_len;
+      return a_hi == a_len-1;
     } else if (read_id == b_id) {
-      return b_hi == b_len;
+      return b_hi == b_len-1;
     }
 
     return false;
