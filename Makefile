@@ -24,13 +24,13 @@ obj/filter_transitive_main.o: src/filter-transitive/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-bin/filter-contained: obj/filter_contained_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
-	mkdir -p bin
-	$(CC) $(LDFLAGS) -o $@ $^
+obj/mhap/overlap.o: src/mhap/overlap.cpp
+	mkdir -p obj/mhap
+	$(CC) $(CFLAGS) -c -o $@ $^
 
-bin/filter-transitive: obj/filter_transitive.o obj/filter_transitive_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
-	mkdir -p bin
-	$(CC) $(LDFLAGS) -o $@ $^
+obj/mhap/parser.o: src/mhap/parser.cpp
+	mkdir -p obj/mhap
+	$(CC) $(CFLAGS) -c -o $@ $^
 
 obj/overlap2dot.o: src/overlap2dot/overlap2dot.cpp
 	mkdir -p obj
@@ -40,7 +40,15 @@ obj/overlap2dot_main.o: src/overlap2dot/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-bin/overlap2dot: obj/overlap2dot.o obj/overlap2dot_main.o obj/afgreader/overlap.o obj/afgreader/reader.o
+bin/filter-contained: obj/filter_contained_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
+	mkdir -p bin
+	$(CC) $(LDFLAGS) -o $@ $^
+
+bin/filter-transitive: obj/filter_transitive.o obj/filter_transitive_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
+	mkdir -p bin
+	$(CC) $(LDFLAGS) -o $@ $^
+
+bin/overlap2dot: obj/overlap2dot.o obj/overlap2dot_main.o obj/afgreader/overlap.o obj/afgreader/reader.o obj/mhap/parser.o obj/mhap/overlap.o
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 

@@ -1,3 +1,7 @@
+
+#ifndef _OVERLAP2DOT_H
+#define _OVERLAP2DOT_H
+
 #include <vector>
 #include <string>
 #include "afgreader/src/reader.h"
@@ -5,8 +9,6 @@
 #include "graph/edges_set.cpp"
 
 using std::string;
-using AMOS::Overlap;
-using AMOS::Reader;
 using Graph::EdgesSet;
 
 const string get_edge_style(const bool use_start, const bool use_end);
@@ -19,10 +21,12 @@ int dot_graph(ostream& output, vector<V>& overlaps) {
   lines++;
 
   for (const auto& overlap : overlaps) {
-    output << overlap->a_id << " -- " << overlap->b_id << " [";
+    uint32_t a_id = overlap->read1_id();
+    uint32_t b_id = overlap->read2_id();
+    output << a_id << " -- " << b_id << " [";
 
-    string tail_style = get_edge_style(overlap->use_prefix(overlap->a_id), overlap->use_suffix(overlap->b_id));
-    string head_style = get_edge_style(overlap->use_prefix(overlap->a_id), overlap->use_suffix(overlap->b_id));
+    string tail_style = get_edge_style(overlap->use_prefix(a_id), overlap->use_suffix(b_id));
+    string head_style = get_edge_style(overlap->use_prefix(a_id), overlap->use_suffix(b_id));
 
     output << "dir=both arrowtail=" << tail_style << " arrowhead=" << head_style << "];" << endl;
     lines++;
@@ -34,3 +38,4 @@ int dot_graph(ostream& output, vector<V>& overlaps) {
   return lines;
 }
 
+#endif
