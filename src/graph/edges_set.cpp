@@ -32,7 +32,7 @@ namespace Graph {
 
   template <typename T>
     void EdgesSet<T>::add(int src, int dst, T edge_info) {
-      edges_[src].emplace_back(make_pair(dst, edge_info));
+      edges_[src].emplace_back(dst, edge_info);
     }
 
   template <typename T>
