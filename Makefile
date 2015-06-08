@@ -12,10 +12,6 @@ obj/afgreader/overlap.o: lib/afgreader/src/overlap.cpp
 	mkdir -p obj/afgreader
 	$(CC) $(CFLAGS) -c $^ -o $@
 
-obj/filter_contained.o: src/filter-contained/filter_contained.cpp
-	mkdir -p obj
-	$(CC) $(CFLAGS) -c -o $@ $^
-
 obj/filter_contained_main.o: src/filter-contained/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
@@ -28,7 +24,7 @@ obj/filter_transitive_main.o: src/filter-transitive/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-bin/filter-contained: obj/filter_contained.o obj/filter_contained_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
+bin/filter-contained: obj/filter_contained_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 
