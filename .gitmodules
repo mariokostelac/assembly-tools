@@ -1,3 +1,6 @@
 [submodule "lib/afgreader"]
 	path = lib/afgreader
 	url = https://github.com/mariokostelac/afgreader
+[submodule "lib/cmdline"]
+	path = lib/cmdline
+	url = https://github.com/tanakh/cmdline.git
