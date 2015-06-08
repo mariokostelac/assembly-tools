@@ -9,12 +9,12 @@ namespace MHAP {
     uint32_t a_id;
     uint32_t b_id;
     double jaccard_score;
-    uint32_t shared_minmers;
-    bool a_fwd;
+    double shared_minmers;
+    uint32_t a_fwd;
     uint32_t a_lo;
     uint32_t a_hi;
     uint32_t a_len;
-    bool b_fwd;
+    uint32_t b_fwd;
     uint32_t b_lo;
     uint32_t b_hi;
     uint32_t b_len;
