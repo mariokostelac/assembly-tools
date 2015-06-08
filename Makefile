@@ -32,11 +32,15 @@ bin/filter-transitive: obj/filter_transitive.o obj/filter_transitive_main.o obj/
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 
-obj/overlap2dot_main.o: src/overlap2dot/overlap2dot.cpp
+obj/overlap2dot.o: src/overlap2dot/overlap2dot.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-bin/overlap2dot: obj/overlap2dot_main.o obj/afgreader/overlap.o obj/afgreader/reader.o
+obj/overlap2dot_main.o: src/overlap2dot/main.cpp
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c -o $@ $^
+
+bin/overlap2dot: obj/overlap2dot.o obj/overlap2dot_main.o obj/afgreader/overlap.o obj/afgreader/reader.o
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 
