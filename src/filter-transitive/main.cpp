@@ -5,24 +5,22 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <memory>
 #include <string>
 
-using std::shared_ptr;
 using std::string;
 using AMOS::Overlap;
 using AMOS::Read;
 using AMOS::Reader;
 using Graph::EdgesSet;
 
-void fill_reads(vector<shared_ptr<Overlap>>& overlaps, map<uint32_t, shared_ptr<Read>>& reads) {
+void fill_reads(vector<Overlap*>& overlaps, map<uint32_t, Read*>& reads) {
   for (auto o : overlaps) {
     o->a = reads[o->a_id];
     o->b = reads[o->b_id];
   }
 }
 
-int read_from_stream(istream& input, map<uint32_t, shared_ptr<Read>>& reads, vector<shared_ptr<Overlap>>& edges) {
+int read_from_stream(istream& input, map<uint32_t, Read*>& reads, vector<Overlap*>& edges) {
   Reader reader(input);
 
   int stored = 0;
@@ -34,7 +32,7 @@ int read_from_stream(istream& input, map<uint32_t, shared_ptr<Read>>& reads, vec
         continue;
       }
 
-      edges.emplace_back(shared_ptr<Overlap>(overlap));
+      edges.emplace_back(overlap);
       stored++;
     } else if (reader.next_type() == AMOS::READ) {
       Read *read = new Read();
@@ -43,7 +41,7 @@ int read_from_stream(istream& input, map<uint32_t, shared_ptr<Read>>& reads, vec
         continue;
       }
 
-      reads[read->iid] = shared_ptr<Read>(read);
+      reads[read->iid] = read;
       stored++;
     } else {
       reader.skip_next();
@@ -64,8 +62,8 @@ int main(int argc, char **argv) {
     input_streams.emplace_back("-");
   }
 
-  vector<shared_ptr<Overlap>> overlaps;
-  map<uint32_t, shared_ptr<Read>> reads;
+  vector<Overlap*> overlaps;
+  map<uint32_t, Read*> reads;
 
   for (auto stream_name : input_streams) {
     cerr << "Starting reading from " << stream_name << endl;
@@ -85,7 +83,7 @@ int main(int argc, char **argv) {
 
   fill_reads(overlaps, reads);
 
-  vector<shared_ptr<Overlap>> non_transitive_edges;
+  vector<Overlap*> non_transitive_edges;
   get_non_transitives(&non_transitive_edges, overlaps);
 
   cerr << "Filtered " << (overlaps.size() - non_transitive_edges.size()) << " overlaps" << endl;
