@@ -15,26 +15,24 @@ uint32_t get_non_contained(std::vector<T>* dst, const std::vector<T>& overlaps, 
   for (auto o : overlaps) {
     //    --------
     // --------------
-    bool a_contained = o->a_hang <= 0 && o->b_hang >= 0;
-    if (a_contained) {
-      removed[o->a_id]++;
+    if (o->contained(o->read1_id())) {
+      removed[o->read1_id()]++;
       continue;
     }
 
     // ------------->
     //    ------->
-    bool b_contained = o->a_hang >= 0 && o->b_hang <= 0;
-    if (b_contained) {
-      removed[o->b_id]++;
+    if (o->contained(o->read2_id())) {
+      removed[o->read2_id()]++;
       continue;
     }
   }
 
   for (auto o : overlaps) {
-    if (removed[o->a_id]) {
+    if (removed[o->read1_id()]) {
       continue;
     }
-    if (removed[o->b_id]) {
+    if (removed[o->read2_id()]) {
       continue;
     }
 
@@ -50,8 +48,8 @@ template <typename T>
 uint32_t get_non_contained(std::vector<T>* dst, const std::vector<T>& overlaps) {
   uint32_t max_read_id = 0;
   for (auto o : overlaps) {
-    max_read_id = max(max_read_id, o->a_id);
-    max_read_id = max(max_read_id, o->b_id);
+    max_read_id = max(max_read_id, o->read1_id());
+    max_read_id = max(max_read_id, o->read2_id());
   }
 
   return get_non_contained(dst, overlaps, max_read_id);

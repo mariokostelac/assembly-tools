@@ -1,3 +1,7 @@
+
+#ifndef _EDGES_SET
+#define _EDGES_SET
+
 #include <map>
 #include <vector>
 #include <utility>
@@ -46,3 +50,5 @@ namespace Graph {
       return edges_.end();
     }
 }
+
+#endif
