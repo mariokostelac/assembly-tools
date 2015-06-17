@@ -1,5 +1,5 @@
 # overlap2dot
-Conversts overlaps to dot graph
+Converts overlaps to dot graph.
 
 ## Requirements
 - make
