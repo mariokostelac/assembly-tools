@@ -32,3 +32,8 @@ Or even better, for direct plotting to a file
 ```
   ./bin/overlap2dot < overlaps.afg | neato -T png -o graph.png
 ```
+
+## Edge type description
+- full dot - overlap uses read's prefix
+- empty dot - overlap uses read's suffix
+- full square - overlap uses read's suffix and prefix.
