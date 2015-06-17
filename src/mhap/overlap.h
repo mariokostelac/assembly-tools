@@ -23,6 +23,14 @@ namespace MHAP {
       bool use_prefix(uint32_t read_id) const;
       bool use_suffix(uint32_t read_id) const;
 
+      uint32_t length() const;
+      uint32_t length_in_a() const;
+      uint32_t length_in_b() const;
+
+      uint32_t hanging_length(uint32_t r_id) const;
+      uint32_t hanging_length_a() const;
+      uint32_t hanging_length_b() const;
+
       friend std::ostream& operator << (std::ostream &o, const MHAP::Overlap& overlap);
 
     private:

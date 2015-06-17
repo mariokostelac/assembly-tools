@@ -44,7 +44,7 @@ bin/filter-contained: obj/filter_contained_main.o obj/afgreader/reader.o obj/afg
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 
-bin/filter-transitive: obj/filter_transitive.o obj/filter_transitive_main.o obj/afgreader/reader.o obj/afgreader/overlap.o
+bin/filter-transitive: obj/filter_transitive.o obj/filter_transitive_main.o obj/afgreader/reader.o obj/afgreader/overlap.o obj/mhap/parser.o obj/mhap/overlap.o
 	mkdir -p bin
 	$(CC) $(LDFLAGS) -o $@ $^
 

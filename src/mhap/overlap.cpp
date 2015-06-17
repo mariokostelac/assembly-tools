@@ -1,4 +1,5 @@
 #include "overlap.h"
+#include <cassert>
 
 #define THRESHOLD 0.08
 
@@ -33,6 +34,38 @@ namespace MHAP {
     }
 
     return false;
+  }
+
+  uint32_t Overlap::length() const {
+    return (length_in_a() + length_in_b())/2;
+  }
+
+  uint32_t Overlap::length_in_a() const {
+    int32_t olen = a_hi - a_lo + 1;
+    assert(olen >= 0 && olen <= a_len);
+    return olen;
+  }
+
+  uint32_t Overlap::length_in_b() const {
+    int32_t olen = b_hi - b_lo + 1;
+    assert(olen >= 0 && olen <= b_len);
+    return olen;
+  }
+
+  uint32_t Overlap::hanging_length(uint32_t r_id) const {
+    assert(r_id == a_id || r_id == b_id);
+    if (r_id == a_id) {
+      return hanging_length_a();
+    }
+    return hanging_length_b();
+  }
+
+  uint32_t Overlap::hanging_length_a() const {
+    return a_len - length_in_a();
+  }
+
+  uint32_t Overlap::hanging_length_b() const {
+    return b_len - length_in_b();
   }
 
   std::ostream& operator << (std::ostream &o, const Overlap& overlap) {
