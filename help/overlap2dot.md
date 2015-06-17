@@ -15,6 +15,15 @@ Converts overlaps to dot graph.
 ## Usage
 
 ```
+usage: ./bin/overlap2dot [options] <input_files...>
+options:
+  -f, --format    input file format; supported: afg, mhap (string [=afg])
+  -?, --help      print this message
+```
+
+Example:
+
+```
   ./bin/overlap2dot < overlaps.afg > graph.dot
 ```
 
