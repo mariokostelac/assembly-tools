@@ -70,14 +70,14 @@ int main(int argc, char **argv) {
   args.add<string>("oformat", 'o', "overlaps file format; supported: afg, mhap", false, "afg");
   args.parse_check(argc, argv);
 
-  if (args.rest().size() < 2) {
-    cerr << args.usage() << endl;
-    exit(2);
-  }
-
   string overlaps_format = args.get<string>("oformat");
 
   if (overlaps_format == "afg") {
+    if (args.rest().size() < 2) {
+      cerr << args.usage() << endl;
+      exit(2);
+    }
+
     // handling reads
     map<uint32_t, AMOS::Read*> reads;
 
@@ -103,8 +103,13 @@ int main(int argc, char **argv) {
       cout << *o;
     }
   } else if (overlaps_format == "mhap") {
+    if (args.rest().size() < 1) {
+      cerr << args.usage() << endl;
+      exit(2);
+    }
+
     vector<MHAP::Overlap*> overlaps;
-    auto overlaps_stream_name = args.rest()[1];
+    auto overlaps_stream_name = args.rest()[0];
     cerr << "Starting reading from " << overlaps_stream_name << endl;
     istream* overlaps_input_stream = (overlaps_stream_name == "-") ? &cin : new fstream(overlaps_stream_name);
     MHAP::read_overlaps(*overlaps_input_stream, &overlaps);
