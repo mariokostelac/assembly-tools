@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
   ios_base::sync_with_stdio(false);
 
   cmdline::parser args;
-  args.add<string>("rformat", 'r', "reads file format; supported: afg, mhap", false, "afg");
+  args.add<string>("oformat", 'o', "overlaps file format; supported: afg, mhap", false, "afg");
   args.parse_check(argc, argv);
 
   if (args.rest().size() < 2) {
@@ -75,22 +75,22 @@ int main(int argc, char **argv) {
     exit(2);
   }
 
-  string reads_format = args.get<string>("format");
+  string overlaps_format = args.get<string>("oformat");
 
-  // handling reads
-  map<uint32_t, AMOS::Read*> reads;
+  if (overlaps_format == "afg") {
+    // handling reads
+    map<uint32_t, AMOS::Read*> reads;
 
-  auto read_stream_name = args.rest()[0];
-  cerr << "Starting reading from " << read_stream_name << endl;
-  istream* reads_input_stream = (read_stream_name == "-") ? &cin : new fstream(read_stream_name);
-  afg_reads(&reads, *reads_input_stream);
-  cerr << "Read " << reads.size() << " reads from " << read_stream_name << endl;
+    auto read_stream_name = args.rest()[0];
+    cerr << "Starting reading from " << read_stream_name << endl;
+    istream* reads_input_stream = (read_stream_name == "-") ? &cin : new fstream(read_stream_name);
+    afg_reads(&reads, *reads_input_stream);
+    cerr << "Read " << reads.size() << " reads from " << read_stream_name << endl;
 
-  if (reads_format == "afg") {
     vector<AMOS::Overlap*> overlaps;
     auto overlaps_stream_name = args.rest()[1];
     cerr << "Starting reading from " << overlaps_stream_name << endl;
-    istream* overlaps_input_stream = (read_stream_name == "-") ? &cin : new fstream(overlaps_stream_name);
+    istream* overlaps_input_stream = (overlaps_stream_name == "-") ? &cin : new fstream(overlaps_stream_name);
     afg_overlaps(&overlaps, reads, *overlaps_input_stream);
     cerr << "Read " << overlaps.size() << " overlaps from " << overlaps_stream_name << endl;
 
@@ -102,11 +102,11 @@ int main(int argc, char **argv) {
     for (auto& o : non_transitive_edges) {
       cout << *o;
     }
-  } else if (reads_format == "mhap") {
+  } else if (overlaps_format == "mhap") {
     vector<MHAP::Overlap*> overlaps;
     auto overlaps_stream_name = args.rest()[1];
     cerr << "Starting reading from " << overlaps_stream_name << endl;
-    istream* overlaps_input_stream = (read_stream_name == "-") ? &cin : new fstream(overlaps_stream_name);
+    istream* overlaps_input_stream = (overlaps_stream_name == "-") ? &cin : new fstream(overlaps_stream_name);
     MHAP::read_overlaps(*overlaps_input_stream, &overlaps);
     cerr << "Read " << overlaps.size() << " overlaps from " << overlaps_stream_name << endl;
 
