@@ -1,5 +1,6 @@
 
 #include "parser.h"
+#include "ra/include/ra/ra.hpp"
 
 namespace MHAP {
 
@@ -24,7 +25,7 @@ namespace MHAP {
       input >> a_fwd >> a_lo >> a_hi >> a_len;
       input >> b_fwd >> b_lo >> b_hi >> b_len;
 
-      Overlap* overlap = new Overlap(
+      MhapOverlap* overlap = new MhapOverlap(
           a_id, b_id, jaccard_score, shared_minmers,
           a_fwd, a_lo, a_hi, a_len,
           b_fwd, b_lo, b_hi, b_len);

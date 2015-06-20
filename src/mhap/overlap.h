@@ -2,36 +2,64 @@
 #ifndef _MHAP_OVERLAP_H
 #define _MHAP_OVERLAP_H
 
+#include <cassert>
 #include <cstdint>
 #include <iostream>
+#include "ra/include/ra/ra.hpp"
 
 namespace MHAP {
 
-  class Overlap {
+  class MhapOverlap: public Overlap {
     public:
-      Overlap();
+      MhapOverlap() {};
 
-      Overlap(uint32_t a_id, uint32_t b_id, double jaccard_score, uint32_t shared_minmers,
+      MhapOverlap(uint32_t a_id, uint32_t b_id, double jaccard_score, uint32_t shared_minmers,
           bool a_fwd, uint32_t a_lo, uint32_t a_hi, uint32_t a_len,
           bool b_fwd, uint32_t b_lo, uint32_t b_hi, uint32_t b_len)
         : a_id(a_id), b_id(b_id), jaccard_score(jaccard_score), shared_minmers(shared_minmers),
         a_fwd(a_fwd), a_lo(a_lo), a_hi(a_hi), a_len(a_len),
-        b_fwd(b_fwd), b_lo(b_lo), b_hi(b_hi), b_len(b_len) {}
+        b_fwd(b_fwd), b_lo(b_lo), b_hi(b_hi), b_len(b_len) {
 
-      uint32_t read1_id() const;
-      uint32_t read2_id() const;
-      bool use_prefix(uint32_t read_id) const;
-      bool use_suffix(uint32_t read_id) const;
+          assert(a_fwd == true);
+        }
 
-      uint32_t length() const;
-      uint32_t length_in_a() const;
-      uint32_t length_in_b() const;
+      int getA() const {
+        return a_id;
+      }
 
-      uint32_t hanging_length(uint32_t r_id) const;
-      uint32_t hanging_length_a() const;
-      uint32_t hanging_length_b() const;
+      void setA(int a) {
+        a_id = a;
+      }
 
-      friend std::ostream& operator << (std::ostream &o, const MHAP::Overlap& overlap);
+      int getB() const {
+        return b_id;
+      }
+
+      void setB(int b) {
+        b_id = b;
+      }
+
+      int getLength() const;
+
+      int getAHang() const;
+
+      int getBHang() const;
+
+      bool isInnie() const;
+
+      // checks whether the start of read is contained in overlap
+      // - respects direction of read (important for reverse complements)!
+      bool isUsingPrefix(int readId) const;
+
+      // checks whether the end of read is contained in overlap
+      // - respects direction of read (important for reverse complements)!
+      bool isUsingSuffix(int readId) const;
+
+      uint hangingLength(int readId) const;
+
+      Overlap* clone() const;
+
+      void print(std::ostream& str) const;
 
     private:
       uint32_t a_id;
@@ -46,9 +74,13 @@ namespace MHAP {
       uint32_t b_lo;
       uint32_t b_hi;
       uint32_t b_len;
-  };
 
-  std::ostream& operator << (std::ostream &o, const MHAP::Overlap& overlap);
+      uint32_t lengthInA() const;
+      uint32_t lengthInB() const;
+
+      uint32_t hangingLengthA() const;
+      uint32_t hangingLengthB() const;
+  };
 }
 
 #endif

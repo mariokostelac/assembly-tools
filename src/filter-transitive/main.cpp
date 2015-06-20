@@ -1,71 +1,22 @@
 
-#include "filter_transitive.h"
-#include "afgreader/src/reader.h"
 #include "cmdline/cmdline.h"
 #include "graph/edges_set.cpp"
 #include "mhap/overlap.h"
 #include "mhap/parser.h"
+#include "ra/include/ra/ra.hpp"
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <unistd.h>
 
+using std::cerr;
+using std::endl;
 using std::string;
 using Graph::EdgesSet;
 
-int afg_reads(map<uint32_t, AMOS::Read*>* reads, istream& input) {
-  AMOS::Reader reader(input);
-
-  int stored = 0;
-  while (reader.has_next()) {
-    if (reader.next_type() == AMOS::READ) {
-      auto read = new AMOS::Read();
-      if (!reader.next(read)) {
-        cerr << "Error while reading read" << endl;
-        continue;
-      }
-
-      (*reads)[read->iid] = read;
-      stored++;
-    } else {
-      reader.skip_next();
-      continue;
-    }
-  }
-
-  return stored;
-}
-
-int afg_overlaps(vector<AMOS::Overlap*>* overlaps, map<uint32_t, AMOS::Read*>& reads,  istream& input) {
-  AMOS::Reader reader(input);
-
-  int stored = 0;
-  while (reader.has_next()) {
-    if (reader.next_type() == AMOS::OVERLAP) {
-      auto overlap = new Overlap();
-      if (!reader.next(overlap)) {
-        cerr << "Error while reading overlap" << endl;
-        continue;
-      }
-
-      overlap->a = reads[overlap->a_id];
-      overlap->b = reads[overlap->b_id];
-
-      overlaps->emplace_back(overlap);
-      stored++;
-    } else {
-      reader.skip_next();
-      continue;
-    }
-  }
-
-  return stored;
-}
 
 int main(int argc, char **argv) {
-  ios_base::sync_with_stdio(false);
-
   cmdline::parser args;
   args.add<string>("oformat", 'o', "overlaps file format; supported: afg, mhap", false, "afg");
   args.parse_check(argc, argv);
@@ -78,51 +29,46 @@ int main(int argc, char **argv) {
       exit(2);
     }
 
-    // handling reads
-    map<uint32_t, AMOS::Read*> reads;
+    const auto read_stream_name = args.rest()[0];
+    const auto overlaps_stream_name = args.rest()[1];
 
-    auto read_stream_name = args.rest()[0];
+    vector<Read*> reads;
+    vector<Overlap*> overlaps;
+
     cerr << "Starting reading from " << read_stream_name << endl;
-    istream* reads_input_stream = (read_stream_name == "-") ? &cin : new fstream(read_stream_name);
-    afg_reads(&reads, *reads_input_stream);
+    readAfgReads(reads, read_stream_name.c_str());
     cerr << "Read " << reads.size() << " reads from " << read_stream_name << endl;
 
-    vector<AMOS::Overlap*> overlaps;
-    auto overlaps_stream_name = args.rest()[1];
     cerr << "Starting reading from " << overlaps_stream_name << endl;
-    istream* overlaps_input_stream = (overlaps_stream_name == "-") ? &cin : new fstream(overlaps_stream_name);
-    afg_overlaps(&overlaps, reads, *overlaps_input_stream);
+    readAfgOverlaps(overlaps, overlaps_stream_name.c_str());
     cerr << "Read " << overlaps.size() << " overlaps from " << overlaps_stream_name << endl;
 
-    vector<Overlap*> non_transitive_edges;
-    get_non_transitives(&non_transitive_edges, overlaps);
+    //cerr << "Filtered " << (overlaps.size() - non_transitive_edges.size()) << " overlaps" << endl;
 
-    cerr << "Filtered " << (overlaps.size() - non_transitive_edges.size()) << " overlaps" << endl;
-
-    for (auto& o : non_transitive_edges) {
-      cout << *o;
-    }
+    //for (auto& o : non_transitive_edges) {
+      //cout << *o;
+    //}
   } else if (overlaps_format == "mhap") {
-    if (args.rest().size() < 1) {
-      cerr << args.usage() << endl;
-      exit(2);
-    }
+    //if (args.rest().size() < 1) {
+      //cerr << args.usage() << endl;
+      //exit(2);
+    //}
 
-    vector<MHAP::Overlap*> overlaps;
-    auto overlaps_stream_name = args.rest()[0];
-    cerr << "Starting reading from " << overlaps_stream_name << endl;
-    istream* overlaps_input_stream = (overlaps_stream_name == "-") ? &cin : new fstream(overlaps_stream_name);
-    MHAP::read_overlaps(*overlaps_input_stream, &overlaps);
-    cerr << "Read " << overlaps.size() << " overlaps from " << overlaps_stream_name << endl;
+    //vector<MHAP::Overlap*> overlaps;
+    //auto overlaps_stream_name = args.rest()[0];
+    //cerr << "Starting reading from " << overlaps_stream_name << endl;
+    //istream* overlaps_input_stream = (overlaps_stream_name == "-") ? &cin : new fstream(overlaps_stream_name);
+    //MHAP::read_overlaps(*overlaps_input_stream, &overlaps);
+    //cerr << "Read " << overlaps.size() << " overlaps from " << overlaps_stream_name << endl;
 
-    vector<MHAP::Overlap*> non_transitive_edges;
-    get_non_transitives(&non_transitive_edges, overlaps);
+    //vector<MHAP::Overlap*> non_transitive_edges;
+    //get_non_transitives(&non_transitive_edges, overlaps);
 
-    cerr << "Filtered " << (overlaps.size() - non_transitive_edges.size()) << " overlaps" << endl;
+    //cerr << "Filtered " << (overlaps.size() - non_transitive_edges.size()) << " overlaps" << endl;
 
-    for (auto& o : non_transitive_edges) {
-      cout << *o;
-    }
+    //for (auto& o : non_transitive_edges) {
+      //cout << *o;
+    //}
   } else {
     assert(false);
   }

@@ -2,36 +2,16 @@
 #include <vector>
 #include <string>
 #include "overlap2dot.h"
-#include "afgreader/src/overlap.h"
-#include "afgreader/src/reader.h"
 #include "cmdline/cmdline.h"
 #include "mhap/parser.h"
 
+using std::cerr;
+using std::cin;
+using std::cout;
+using std::fstream;
 using std::string;
 using std::vector;
-
-int read_amos_overlaps(istream& input, vector<AMOS::Overlap*>* overlaps) {
-  AMOS::Reader reader(input);
-
-  int stored = 0;
-  while (reader.has_next()) {
-    if (reader.next_type() == AMOS::OVERLAP) {
-      AMOS::Overlap *overlap = new AMOS::Overlap();
-      if (!reader.next(overlap)) {
-        cerr << "Error while reading overlap" << endl;
-        continue;
-      }
-
-      overlaps->emplace_back(overlap);
-      stored++;
-    } else {
-      reader.skip_next();
-      continue;
-    }
-  }
-
-  return stored;
-}
+using std::endl;
 
 int main(int argc, char **argv) {
   cmdline::parser args;
@@ -47,35 +27,22 @@ int main(int argc, char **argv) {
     input_streams.emplace_back("-");
   }
 
-  vector<AMOS::Overlap*> overlaps_afg;
-  vector<MHAP::Overlap*> overlaps_mhap;
+  vector<Overlap*> overlaps;
 
   string format = args.get<string>("format");
 
   for (auto stream_name : input_streams) {
     cerr << "Starting reading from " << stream_name << endl;
-    int read = 0;
-    istream* input;
-    if (stream_name == "-") {
-      input = &cin;
-    } else {
-      input = new fstream(stream_name);
-    }
 
     if (format == "afg") {
-      read = read_amos_overlaps(*input, &overlaps_afg);
+      readAfgOverlaps(overlaps, stream_name.c_str());
     } else if (format == "mhap") {
-      read = MHAP::read_overlaps(*input, &overlaps_mhap);
+      fstream file(stream_name);
+      MHAP::read_overlaps(file, &overlaps);
+      file.close();
     }
-
-    cerr << "Read " << read << " objects from " << stream_name << endl;
   }
 
-  if (format == "afg") {
-    cerr <<  "Read " << overlaps_afg.size() << " overlaps." << endl;
-    dot_graph(cout, overlaps_afg);
-  } else if (format == "mhap") {
-    cerr <<  "Read " << overlaps_mhap.size() << " overlaps." << endl;
-    dot_graph(cout, overlaps_mhap);
-  }
+  cerr <<  "Read " << overlaps.size() << " overlaps." << endl;
+  dot_graph(cout, overlaps);
 }
