@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
   args.add<string>("oformat", 'f', "overlaps file format; supported: afg, mhap", false, "afg");
   args.parse_check(argc, argv);
 
-  string format = args.get<string>("format");
+  string format = args.get<string>("oformat");
 
   if (args.rest().size() < 2) {
     // TODO
