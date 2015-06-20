@@ -14,13 +14,13 @@ namespace MHAP {
       MhapOverlap() {};
 
       MhapOverlap(uint32_t a_id, uint32_t b_id, double jaccard_score, uint32_t shared_minmers,
-          bool a_fwd, uint32_t a_lo, uint32_t a_hi, uint32_t a_len,
-          bool b_fwd, uint32_t b_lo, uint32_t b_hi, uint32_t b_len)
+          bool a_rc, uint32_t a_lo, uint32_t a_hi, uint32_t a_len,
+          bool b_rc, uint32_t b_lo, uint32_t b_hi, uint32_t b_len)
         : a_id(a_id), b_id(b_id), jaccard_score(jaccard_score), shared_minmers(shared_minmers),
-        a_fwd(a_fwd), a_lo(a_lo), a_hi(a_hi), a_len(a_len),
-        b_fwd(b_fwd), b_lo(b_lo), b_hi(b_hi), b_len(b_len) {
+        a_rc(a_rc), a_lo(a_lo), a_hi(a_hi), a_len(a_len),
+        b_rc(b_rc), b_lo(b_lo), b_hi(b_hi), b_len(b_len) {
 
-          assert(a_fwd == true);
+          assert(!a_rc);
         }
 
       int getA() const {
@@ -66,11 +66,11 @@ namespace MHAP {
       uint32_t b_id;
       double jaccard_score;
       uint32_t shared_minmers;
-      bool a_fwd;
+      bool a_rc;
       uint32_t a_lo;
       uint32_t a_hi;
       uint32_t a_len;
-      bool b_fwd;
+      bool b_rc;
       uint32_t b_lo;
       uint32_t b_hi;
       uint32_t b_len;

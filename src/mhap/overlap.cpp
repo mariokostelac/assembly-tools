@@ -61,18 +61,18 @@ namespace MHAP {
   }
 
   bool MhapOverlap::isInnie() const {
-    return !b_fwd;
+    return b_rc;
   }
 
   int MhapOverlap::getAHang() const {
-    if (a_fwd && b_fwd) {
+    if (!a_rc && !b_rc) {
       // -----|------|---->
       //  ah -|------|---->
       //
       // -ah -|------|---->
       // -----|------|---->
       return a_lo - b_lo;
-    } else if (a_fwd && !b_fwd) {
+    } else if (!a_rc && b_rc) {
       // -----|------|---->
       //  ah <|------|-----
       //
@@ -85,7 +85,7 @@ namespace MHAP {
   }
 
   int MhapOverlap::getBHang() const {
-    if (a_fwd && b_fwd) {
+    if (!a_rc && !b_rc) {
       //     -|------|-> bh
       // -----|------|------>
       //
@@ -94,7 +94,7 @@ namespace MHAP {
       int b_after = b_len - b_hi;
       int a_after = a_len - a_hi;
       return b_after - a_after;
-    } else if (a_fwd && !b_fwd) {
+    } else if (!a_rc && b_rc) {
       //     -|------|-> bh
       // <----|------|-------
       //
@@ -114,11 +114,11 @@ namespace MHAP {
     copy->b_id = b_id;
     copy->jaccard_score = jaccard_score;
     copy->shared_minmers = shared_minmers;
-    copy->a_fwd = a_fwd;
+    copy->a_rc = a_rc;
     copy->a_lo = a_lo;
     copy->a_hi = a_hi;
     copy->a_len = a_len;
-    copy->b_fwd = b_fwd;
+    copy->b_rc = b_rc;
     copy->b_lo = b_lo;
     copy->b_hi = b_hi;
     copy->b_len = b_len;
@@ -128,8 +128,8 @@ namespace MHAP {
   void MhapOverlap::print(std::ostream& o) const {
     o << a_id << " " << b_id << " " << jaccard_score << " ";
     o << (double) (shared_minmers) << " ";
-    o << (int) (a_fwd) << " " << a_lo << " " << a_hi << " " << a_len << " ";
-    o << (int) (b_fwd) << " " << b_lo << " " << b_hi << " " << b_len << " ";
+    o << (int) (a_rc) << " " << a_lo << " " << a_hi << " " << a_len << " ";
+    o << (int) (b_rc) << " " << b_lo << " " << b_hi << " " << b_len << " ";
     o << endl;
   }
 }
