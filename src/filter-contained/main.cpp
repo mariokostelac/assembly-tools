@@ -32,8 +32,8 @@ void map_reads(vector<Read*>* mapped, vector<Read*>& reads) {
 
 int main(int argc, char **argv) {
   cmdline::parser args;
-  args.add<string>("reads", 'r', "reads file");
-  args.add<string>("overlaps", 'x', "overlaps file");
+  args.add<string>("reads", 'r', "reads file", true);
+  args.add<string>("overlaps", 'x', "overlaps file", true);
   args.add<string>("overlaps_format", 'f', "overlaps file format; supported: afg, mhap", false, "afg");
   args.parse_check(argc, argv);
 
