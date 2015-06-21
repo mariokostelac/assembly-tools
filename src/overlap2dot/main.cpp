@@ -34,12 +34,12 @@ int main(int argc, char **argv) {
   for (auto stream_name : input_streams) {
     cerr << "Starting reading from " << stream_name << endl;
 
+    istream* input = stream_name == "-" ? &cin : new fstream(stream_name);
+
     if (format == "afg") {
-      readAfgOverlaps(overlaps, stream_name.c_str());
+      readAfgOverlaps(overlaps, *input);
     } else if (format == "mhap") {
-      fstream file(stream_name);
-      MHAP::read_overlaps(file, &overlaps);
-      file.close();
+      MHAP::read_overlaps(*input, &overlaps);
     }
   }
 
