@@ -9,9 +9,9 @@ using std::ostream;
 namespace MHAP {
 
   bool MhapOverlap::isUsingPrefix(int read_id) const {
-    if (read_id == a_id) {
+    if ((uint) read_id == a_id) {
       return a_lo <= THRESHOLD * a_len;
-    } else if (read_id == b_id) {
+    } else if ((uint) read_id == b_id) {
       return b_lo <= THRESHOLD * b_len;
     }
 
@@ -19,9 +19,9 @@ namespace MHAP {
   }
 
   bool MhapOverlap::isUsingSuffix(int read_id) const {
-    if (read_id == a_id) {
+    if ((uint) read_id == a_id) {
       return a_hi >= a_len * (1 - THRESHOLD);
-    } else if (read_id == b_id) {
+    } else if ((uint) read_id == b_id) {
       return b_hi >= b_len * (1 - THRESHOLD);
     }
 
@@ -34,19 +34,19 @@ namespace MHAP {
 
   uint32_t MhapOverlap::lengthInA() const {
     int32_t olen = a_hi - a_lo + 1;
-    assert(olen >= 0 && olen <= a_len);
-    return olen;
+    assert(olen >= 0 && olen <= (int32_t) a_len);
+    return (uint32_t) olen;
   }
 
   uint32_t MhapOverlap::lengthInB() const {
     int32_t olen = b_hi - b_lo + 1;
-    assert(olen >= 0 && olen <= b_len);
-    return olen;
+    assert(olen >= 0 && olen <= (int32_t) b_len);
+    return (uint32_t) olen;
   }
 
   uint MhapOverlap::hangingLength(int r_id) const {
-    assert(r_id == a_id || r_id == b_id);
-    if (r_id == a_id) {
+    assert((uint) r_id == a_id || (uint) r_id == b_id);
+    if ((uint) r_id == a_id) {
       return hangingLengthA();
     }
     return hangingLengthB();

@@ -20,13 +20,13 @@ using std::vector;
 // map reads so we can access reads with mapped[read_id]
 void map_reads(vector<Read*>* mapped, vector<Read*>& reads) {
   int max_id = -1;
-  for (int i = 0; i < reads.size(); ++i) {
-    max_id = max(max_id, reads[i]->getId());
+  for (auto r: reads) {
+    max_id = max(max_id, r->getId());
   }
 
   mapped->resize(max_id + 1, nullptr);
-  for (int i = 0; i < reads.size(); ++i) {
-    (*mapped)[reads[i]->getId()] = reads[i];
+  for (auto r: reads) {
+    (*mapped)[r->getId()] = r;
   }
 }
 
@@ -58,9 +58,9 @@ int main(int argc, char **argv) {
     overlaps_file.close();
   }
 
-  for (int i = 0; i < overlaps.size(); ++i) {
-    const auto a = overlaps[i]->getA();
-    const auto b = overlaps[i]->getB();
+  for (auto o: overlaps) {
+    const auto a = o->getA();
+    const auto b = o->getB();
     assert(reads_mapped[a] != nullptr);
     assert(reads_mapped[b] != nullptr);
   }

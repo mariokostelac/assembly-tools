@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 
   vector<string> input_streams;
 
-  for (int i = 0; i < args.rest().size(); ++i) {
+  for (uint i = 0; i < args.rest().size(); ++i) {
     input_streams.emplace_back(args.rest()[i]);
   }
   if (input_streams.size() == 0) {
