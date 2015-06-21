@@ -23,6 +23,8 @@ namespace MHAP {
           assert(!a_rc);
         }
 
+      ~MhapOverlap() {};
+
       int getA() const {
         return a_id;
       }
