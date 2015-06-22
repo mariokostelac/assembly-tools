@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -g -Wall -std=c++11 -O3 -I ./lib -I ./src -I ./
-LDFLAGS=
+LDFLAGS = -pthread
 
 default: bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout
 
@@ -34,19 +34,19 @@ obj/overlap2dot_main.o: src/overlap2dot/main.cpp
 
 bin/filter-contained: obj/filter_contained_main.o obj/mhap/parser.o obj/mhap/overlap.o lib/ra/lib/libra.a
 	mkdir -p bin
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 bin/filter-transitive: obj/filter_transitive_main.o obj/mhap/parser.o obj/mhap/overlap.o lib/ra/lib/libra.a
 	mkdir -p bin
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 bin/overlap2dot: obj/overlap2dot.o obj/overlap2dot_main.o obj/mhap/parser.o obj/mhap/overlap.o lib/ra/lib/libra.a
 	mkdir -p bin
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 bin/layout: obj/layout_main.o obj/mhap/parser.o obj/mhap/overlap.o lib/ra/lib/libra.a
 	mkdir -p bin
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:
 	@rm -rf bin
