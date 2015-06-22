@@ -46,4 +46,6 @@ int main(int argc, char **argv) {
     std::cout << *o;
     delete o;
   }
+
+  return 0;
 }

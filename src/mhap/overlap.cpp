@@ -9,23 +9,25 @@ using std::ostream;
 namespace MHAP {
 
   bool MhapOverlap::isUsingPrefix(int read_id) const {
+
     if ((uint) read_id == a_id) {
       return a_lo <= THRESHOLD * a_len;
     } else if ((uint) read_id == b_id) {
       return b_lo <= THRESHOLD * b_len;
     }
 
-    return false;
+    assert(false);
   }
 
   bool MhapOverlap::isUsingSuffix(int read_id) const {
+
     if ((uint) read_id == a_id) {
       return a_hi >= a_len * (1 - THRESHOLD);
     } else if ((uint) read_id == b_id) {
       return b_hi >= b_len * (1 - THRESHOLD);
     }
 
-    return false;
+    assert(false);
   }
 
   int MhapOverlap::getLength() const {
@@ -100,9 +102,9 @@ namespace MHAP {
       //
       // -----|------|------>
       //     <|------|-- -bh
-      int b_after = b_len - b_hi;
-      int a_before = a_lo;
-      return b_after - a_before;
+      int a_after = a_len - a_hi;
+      int b_after = b_lo;
+      return b_after - a_after;
     }
 
     assert(false);

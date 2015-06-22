@@ -19,6 +19,7 @@ using std::vector;
 
 // map reads so we can access reads with mapped[read_id]
 void map_reads(vector<Read*>* mapped, vector<Read*>& reads) {
+
   int max_id = -1;
   for (auto r: reads) {
     max_id = max(max_id, r->getId());
@@ -31,12 +32,14 @@ void map_reads(vector<Read*>* mapped, vector<Read*>& reads) {
 }
 
 int main(int argc, char **argv) {
+
   cmdline::parser args;
   args.add<string>("reads", 'r', "reads file", true);
   args.add<string>("overlaps", 'x', "overlaps file", true);
   args.add<string>("overlaps_format", 'f', "overlaps file format; supported: afg, mhap", false, "afg");
   args.parse_check(argc, argv);
 
+  const int thread_len = std::max(std::thread::hardware_concurrency(), 1U);
   const string format = args.get<string>("overlaps_format");
   const string reads_filename = args.get<string>("reads");
   const string overlaps_filename = args.get<string>("overlaps");
@@ -65,21 +68,35 @@ int main(int argc, char **argv) {
     assert(reads_mapped[b] != nullptr);
   }
 
-  filterContainedOverlaps(filtered, overlaps, reads_mapped, true);
+  createReverseComplements(reads, thread_len);
 
-  for (const auto o : filtered) {
-    cout << *o;
+  StringGraph* graph = new StringGraph(reads, overlaps);
+  graph->simplify();
+
+  std::vector<StringGraphComponent*> components;
+  graph->extractComponents(components);
+
+  std::vector<Contig*> contigs;
+
+  for (const auto& component : components) {
+
+    Contig* contig = component->createContig();
+
+    if (contig != nullptr) {
+      contigs.emplace_back(contig);
+    }
   }
 
-  for (auto r: reads) {
-    delete r;
-  }
+  std::cerr << "number of contigs " << contigs.size() << std::endl;
 
-  for (auto o: overlaps) {
-    delete o;
-  }
+  writeAfgContigs(contigs, "contigs.afg");
 
-  cerr << "Written " << filtered.size() << " overlaps. Ratio: " << filtered.size() / (1.0 * overlaps.size()) << endl;
+  for (auto r: reads)      delete r;
+  for (auto o: overlaps)   delete o;
+  for (auto c: components) delete c;
+  for (auto c: contigs)    delete c;
+
+  delete graph;
 
   return 0;
 }
