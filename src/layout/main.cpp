@@ -36,13 +36,15 @@ int main(int argc, char **argv) {
   cmdline::parser args;
   args.add<string>("reads", 'r', "reads file", true);
   args.add<string>("overlaps", 'x', "overlaps file", true);
+  args.add<bool>("verbose", 'v', "verbose output");
   args.add<string>("overlaps_format", 'f', "overlaps file format; supported: afg, mhap", false, "afg");
   args.parse_check(argc, argv);
 
-  const int thread_len = std::max(std::thread::hardware_concurrency(), 1U);
+  const int thread_num = std::max(std::thread::hardware_concurrency(), 1U);
   const string format = args.get<string>("overlaps_format");
   const string reads_filename = args.get<string>("reads");
   const string overlaps_filename = args.get<string>("overlaps");
+  const bool verbose_output = args.get<bool>("verbose");
 
   vector<Overlap*> overlaps, filtered;
   vector<Read*> reads;
@@ -68,9 +70,23 @@ int main(int argc, char **argv) {
     assert(reads_mapped[b] != nullptr);
   }
 
-  createReverseComplements(reads, thread_len);
+  vector<Overlap*> nocontainments;
+  filterContainedOverlaps(nocontainments, overlaps, reads_mapped, true);
 
-  StringGraph* graph = new StringGraph(reads, overlaps);
+  if (verbose_output) {
+    writeAfgOverlaps(nocontainments, "nocont.afg");
+  }
+
+  vector<Overlap*> notransitives;
+  filterTransitiveOverlaps(notransitives, nocontainments, thread_num, true);
+
+  if (verbose_output) {
+    writeAfgOverlaps(notransitives, "nocont.notran.afg");
+  }
+
+  createReverseComplements(reads, thread_num);
+
+  StringGraph* graph = new StringGraph(reads, notransitives);
   graph->simplify();
 
   std::vector<StringGraphComponent*> components;
