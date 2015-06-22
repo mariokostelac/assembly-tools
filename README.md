@@ -1,6 +1,14 @@
 # assembly-tools
 Useful tools for assembling the genome
 
+## Preparing
+```
+git clone https://github.com/mariokostelac/assembly-tools.git
+git submodule update --init
+make lib
+make
+```
+
 ## Tools list
 - [layout](src/layout/README.md) - simplifies layout graph
 - [overlap2dot](help/overlap2dot.md) - transforms overlaps to dot graph
@@ -11,4 +19,5 @@ Useful tools for assembling the genome
 ## General requirements
 - make
 - gcc
+
 

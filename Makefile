@@ -1,8 +1,13 @@
+.PHONY: lib
+
 CC = g++
 CFLAGS = -g -Wall -std=c++11 -O3 -I ./lib -I ./src -I ./
 LDFLAGS = -pthread
 
 default: bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout
+
+lib:
+	make -C lib/ra
 
 obj/filter_contained_main.o: src/filter-contained/main.cpp
 	mkdir -p obj
