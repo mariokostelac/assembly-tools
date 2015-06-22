@@ -12,7 +12,7 @@ options:
   -?, --help               print this message
 ```
 
-## Methods
+## Steps
 - filtering containment edges
 - filtering transitive edges
 - trimming
