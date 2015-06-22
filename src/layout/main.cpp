@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
   filterContainedOverlaps(nocontainments, overlaps, reads_mapped, true);
 
   {
-    int filtered = nocontainments.size() - overlaps.size();
+    int filtered =  overlaps.size() - nocontainments.size();
     cerr << "Removed " << filtered << " overlaps as contained "
       << "(" << (1.*filtered)/overlaps.size() << ")" << endl;
   }
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
   filterTransitiveOverlaps(notransitives, nocontainments, thread_num, true);
 
   {
-    int filtered = notransitives.size() - nocontainments.size();
+    int filtered = nocontainments.size() - notransitives.size();
     cerr << "Removed " << filtered << " overlaps as transitive "
       << "(" << (1.*filtered)/nocontainments.size() << ")" << endl;
   }
