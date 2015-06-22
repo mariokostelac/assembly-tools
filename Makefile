@@ -4,7 +4,7 @@ CC = g++
 CFLAGS = -g -Wall -std=c++11 -O3 -I ./lib -I ./src -I ./
 LDFLAGS = -pthread
 
-default: bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout
+default: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout
 
 lib:
 	make -C lib/ra
@@ -54,5 +54,6 @@ bin/layout: obj/layout_main.o obj/mhap/parser.o obj/mhap/overlap.o lib/ra/lib/li
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:
+	make -C lib/ra clean
 	@rm -rf bin
 	@rm -rf obj

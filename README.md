@@ -5,7 +5,6 @@ Useful tools for assembling the genome
 ```
 git clone https://github.com/mariokostelac/assembly-tools.git
 git submodule update --init
-make lib
 make
 ```
 
