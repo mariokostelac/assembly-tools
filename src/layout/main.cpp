@@ -47,32 +47,50 @@ int main(int argc, char **argv) {
 
   cmdline::parser args;
   args.add<string>("reads", 'r', "reads file", true);
+  args.add<string>("reads_format", 's', "reads format; supported: fasta, afg", false, "fasta");
+  args.add<int>("reads_id_offset", 'a', "reads id offset (first read id)", false, 0);
   args.add<string>("overlaps", 'x', "overlaps file", true);
   args.add<bool>("verbose", 'v', "verbose output", false);
   args.add<string>("overlaps_format", 'f', "overlaps file format; supported: afg, mhap", false, "afg");
   args.parse_check(argc, argv);
 
   const int thread_num = std::max(std::thread::hardware_concurrency(), 1U);
-  const string format = args.get<string>("overlaps_format");
   const string reads_filename = args.get<string>("reads");
+  const string reads_format = args.get<string>("reads_format");
   const string overlaps_filename = args.get<string>("overlaps");
+  const string overlaps_format = args.get<string>("overlaps_format");
   const bool verbose_output = args.get<bool>("verbose");
+  const int reads_id_offset = args.get<int>("read_id_offset");
 
   vector<Overlap*> overlaps, filtered;
   vector<Read*> reads;
   vector<Read*> reads_mapped;
 
-  readAfgReads(reads, reads_filename.c_str());
+  if (reads_format == "fasta") {
+    readAfgReads(reads, reads_filename.c_str());
+  } else if (reads_format == "afg") {
+    readFastaReads(reads, reads_filename.c_str());
+  } else {
+    assert(false);
+  }
+
+  // map reads so we have reads_mapped[read_id] -> read
   map_reads(&reads_mapped, reads);
 
   std::cerr << "Read " << reads.size() << " reads" << std::endl;
 
-  if (format == "afg") {
+  if (reads_format == "afg") {
     readAfgOverlaps(overlaps, overlaps_filename.c_str());
-  } else if (format == "mhap") {
+  } else if (reads_format == "mhap") {
     fstream overlaps_file(overlaps_filename);
     MHAP::read_overlaps(overlaps_file, &overlaps);
     overlaps_file.close();
+  }
+
+  // fix overlap read ids
+  for (auto o: overlaps) {
+    o->setA(o->getA() - reads_id_offset);
+    o->setB(o->getB() - reads_id_offset);
   }
 
   for (auto o: overlaps) {
