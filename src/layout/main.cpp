@@ -67,9 +67,9 @@ int main(int argc, char **argv) {
   vector<Read*> reads_mapped;
 
   if (reads_format == "fasta") {
-    readAfgReads(reads, reads_filename.c_str());
-  } else if (reads_format == "afg") {
     readFastaReads(reads, reads_filename.c_str());
+  } else if (reads_format == "afg") {
+    readAfgReads(reads, reads_filename.c_str());
   } else {
     assert(false);
   }
