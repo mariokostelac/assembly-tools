@@ -13,8 +13,8 @@ int READ_LEN_THRESHOLD = 100000;
 
 // BFS params in bubble popping
 size_t MAX_NODES = 750;
-int MAX_DISTANCE = 2500;
-double MAX_DIFFERENCE = 0.05;
+int MAX_DISTANCE = 750*10000;
+double MAX_DIFFERENCE = 0.25;
 
 // contig extraction params
 size_t MAX_BRANCHES = 12;
