@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 
   cmdline::parser args;
   args.add<string>("reads", 'r', "reads file", true);
-  args.add<string>("reads_format", 's', "reads format; supported: fasta, afg", false, "fasta");
+  args.add<string>("reads_format", 's', "reads format; supported: fasta, fastq, afg", false, "fasta");
   args.add<int>("reads_id_offset", 'a', "reads id offset (first read id)", false, 0);
   args.add<string>("overlaps", 'x', "overlaps file", true);
   args.add<bool>("verbose", 'v', "verbose output", false);
@@ -68,6 +68,8 @@ int main(int argc, char **argv) {
 
   if (reads_format == "fasta") {
     readFastaReads(reads, reads_filename.c_str());
+  } else if (reads_format == "fastq") {
+    readFastqReads(reads, reads_filename.c_str());
   } else if (reads_format == "afg") {
     readAfgReads(reads, reads_filename.c_str());
   } else {
@@ -79,9 +81,9 @@ int main(int argc, char **argv) {
 
   std::cerr << "Read " << reads.size() << " reads" << std::endl;
 
-  if (reads_format == "afg") {
+  if (overlaps_format == "afg") {
     readAfgOverlaps(overlaps, overlaps_filename.c_str());
-  } else if (reads_format == "mhap") {
+  } else if (overlaps_format == "mhap") {
     fstream overlaps_file(overlaps_filename);
     MHAP::read_overlaps(overlaps_file, &overlaps);
     overlaps_file.close();
@@ -96,9 +98,17 @@ int main(int argc, char **argv) {
   for (auto o: overlaps) {
     const auto a = o->getA();
     const auto b = o->getB();
-    assert(reads_mapped[a] != nullptr);
-    assert(reads_mapped[b] != nullptr);
+    if (reads_mapped[a] == nullptr) {
+      cerr << "Read " << a << " not found" << endl;
+      exit(1);
+    }
+    if (reads_mapped[b] == nullptr) {
+      cerr << "Read " << b << " not found" << endl;
+      exit(1);
+    }
   }
+
+  cerr << overlaps.size() << " overlaps read" << endl;
 
   vector<Overlap*> nocontainments;
   filterContainedOverlaps(nocontainments, overlaps, reads_mapped, true);
