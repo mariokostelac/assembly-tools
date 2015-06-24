@@ -13,7 +13,7 @@ int READ_LEN_THRESHOLD = 100000;
 
 // BFS params in bubble popping
 size_t MAX_NODES = 750;
-int MAX_DISTANCE = 750*10000;
+int MAX_DISTANCE = MAX_NODES * 10000;
 double MAX_DIFFERENCE = 0.25;
 
 // contig extraction params
@@ -46,12 +46,20 @@ void map_reads(vector<Read*>* mapped, vector<Read*>& reads) {
 int main(int argc, char **argv) {
 
   cmdline::parser args;
+
+  // input params
   args.add<string>("reads", 'r', "reads file", true);
   args.add<string>("reads_format", 's', "reads format; supported: fasta, fastq, afg", false, "fasta");
   args.add<int>("reads_id_offset", 'a', "reads id offset (first read id)", false, 0);
   args.add<string>("overlaps", 'x', "overlaps file", true);
-  args.add<bool>("verbose", 'v', "verbose output", false);
   args.add<string>("overlaps_format", 'f', "overlaps file format; supported: afg, mhap", false, "afg");
+
+  args.add<bool>("verbose", 'v', "verbose output", false);
+
+  // bubble popping params
+  args.add<int>("bp_max_nodes", 'm', "max nodes in bubble branch", false, 750);
+  args.add<double>("bp_max_diff", 'n', "max difference between bubble branches", false, 0.25);
+
   args.parse_check(argc, argv);
 
   const int thread_num = std::max(std::thread::hardware_concurrency(), 1U);
@@ -61,6 +69,10 @@ int main(int argc, char **argv) {
   const string overlaps_format = args.get<string>("overlaps_format");
   const bool verbose_output = args.get<bool>("verbose");
   const int reads_id_offset = args.get<int>("reads_id_offset");
+
+  MAX_NODES = args.get<int>("bp_max_nodes");
+  MAX_DISTANCE = MAX_NODES * 10000;
+  MAX_DIFFERENCE = args.get<double>("bp_max_diff");
 
   vector<Overlap*> overlaps, filtered;
   vector<Read*> reads;
@@ -87,6 +99,8 @@ int main(int argc, char **argv) {
     fstream overlaps_file(overlaps_filename);
     MHAP::read_overlaps(overlaps_file, &overlaps);
     overlaps_file.close();
+  } else {
+    assert(false);
   }
 
   // fix overlap read ids
