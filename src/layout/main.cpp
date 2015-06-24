@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
   const string overlaps_filename = args.get<string>("overlaps");
   const string overlaps_format = args.get<string>("overlaps_format");
   const bool verbose_output = args.get<bool>("verbose");
-  const int reads_id_offset = args.get<int>("read_id_offset");
+  const int reads_id_offset = args.get<int>("reads_id_offset");
 
   vector<Overlap*> overlaps, filtered;
   vector<Read*> reads;
