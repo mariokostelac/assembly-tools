@@ -120,6 +120,9 @@ int main(int argc, char **argv) {
       cerr << "Read " << b << " not found" << endl;
       exit(1);
     }
+
+    o->setReadA(reads_mapped[a]);
+    o->setReadB(reads_mapped[b]);
   }
 
   cerr << overlaps.size() << " overlaps read" << endl;
