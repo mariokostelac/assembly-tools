@@ -17,7 +17,7 @@ int MAX_DISTANCE = MAX_NODES * 10000;
 double MAX_DIFFERENCE = 0.25;
 
 // contig extraction params
-size_t MAX_BRANCHES = 12;
+size_t MAX_BRANCHES = 10000;
 size_t MAX_START_NODES = 24;
 
 using std::cerr;
