@@ -17,8 +17,8 @@ int MAX_DISTANCE = MAX_NODES * 10000;
 double MAX_DIFFERENCE = 0.25;
 
 // contig extraction params
-size_t MAX_BRANCHES = 10000;
-size_t MAX_START_NODES = 24;
+size_t MAX_BRANCHES = 20;
+size_t MAX_START_NODES = 100;
 
 using std::cerr;
 using std::cin;
@@ -137,7 +137,7 @@ int main(int argc, char **argv) {
   }
 
   if (verbose_output) {
-    writeAfgOverlaps(nocontainments, "nocont.afg");
+    writeOverlaps(nocontainments, "nocont.afg");
   }
 
   vector<Overlap*> notransitives;
@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
   }
 
   if (verbose_output) {
-    writeAfgOverlaps(notransitives, "nocont.notran.afg");
+    writeOverlaps(notransitives, "nocont.notran.afg");
   }
 
   createReverseComplements(reads, thread_num);
@@ -161,7 +161,7 @@ int main(int argc, char **argv) {
   if (verbose_output) {
     vector<Overlap*> simplified_overlaps;
     graph->extractOverlaps(simplified_overlaps);
-    writeAfgOverlaps(notransitives, "simplified.afg");
+    writeOverlaps(notransitives, "simplified.afg");
   }
 
   std::vector<StringGraphComponent*> components;
