@@ -158,6 +158,12 @@ int main(int argc, char **argv) {
   StringGraph* graph = new StringGraph(reads, notransitives);
   graph->simplify();
 
+  if (verbose_output) {
+    vector<Overlap*> simplified_overlaps;
+    graph->extractOverlaps(simplified_overlaps);
+    writeAfgOverlaps(notransitives, "simplified.afg");
+  }
+
   std::vector<StringGraphComponent*> components;
   graph->extractComponents(components);
 
