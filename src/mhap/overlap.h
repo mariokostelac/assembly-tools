@@ -33,6 +33,14 @@ namespace MHAP {
         a_id = a;
       }
 
+      Read* getReadA() const {
+        return a_read;
+      }
+
+      void setReadA(Read* read) {
+        a_read = read;
+      }
+
       int getB() const {
         return b_id;
       }
@@ -41,7 +49,17 @@ namespace MHAP {
         b_id = b;
       }
 
+      Read* getReadB() const {
+        return b_read;
+      }
+
+      void setReadB(Read* read) {
+        b_read = read;
+      }
+
       int getLength() const;
+
+      int getLength(int read_id) const;
 
       int getAHang() const;
 
@@ -51,10 +69,12 @@ namespace MHAP {
 
       // checks whether the start of read is contained in overlap
       // - respects direction of read (important for reverse complements)!
+      // at least one of isUsingPrefix/isUsingSuffix returns true (heuristics included)
       bool isUsingPrefix(int readId) const;
 
       // checks whether the end of read is contained in overlap
       // - respects direction of read (important for reverse complements)!
+      // at least one of isUsingPrefix/isUsingSuffix returns true (heuristics included)
       bool isUsingSuffix(int readId) const;
 
       uint hangingLength(int readId) const;
@@ -77,11 +97,17 @@ namespace MHAP {
       uint32_t b_hi;
       uint32_t b_len;
 
-      uint32_t lengthInA() const;
-      uint32_t lengthInB() const;
+      Read* a_read;
+      Read* b_read;
 
       uint32_t hangingLengthA() const;
       uint32_t hangingLengthB() const;
+
+      // returns if overlap really uses prefix of given read
+      bool isReallyUsingPrefix(int readId) const;
+
+      // returns if overlap really uses suffix of given read
+      bool isReallyUsingSuffix(int readId) const;
   };
 }
 
