@@ -18,7 +18,7 @@ double MAX_DIFFERENCE = 0.25;
 
 // contig extraction params
 size_t MAX_BRANCHES = 20;
-size_t MAX_START_NODES = 100;
+size_t MAX_START_NODES = 24;
 
 using std::cerr;
 using std::cin;
@@ -171,11 +171,23 @@ int main(int argc, char **argv) {
 
   for (const auto& component : components) {
 
+    //ContigExtractor* extractor = new ContigExtractor(component);
+    //extractor->extractContig();
+
     Contig* contig = component->createContig();
 
-    if (contig != nullptr) {
-      contigs.emplace_back(contig);
+    if (contig == nullptr) {
+      continue;
     }
+
+    contigs.emplace_back(contig);
+
+    const auto& parts = contig->getParts();
+    fprintf(stdout, "* %lu | ", parts.size());
+    for (const auto& p: parts) {
+      fprintf(stdout, " %d", std::get<0>(p));
+    }
+    fprintf(stdout, "\n");
   }
 
   std::cerr << "number of contigs " << contigs.size() << std::endl;
