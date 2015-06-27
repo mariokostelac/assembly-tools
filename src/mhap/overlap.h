@@ -108,6 +108,10 @@ namespace MHAP {
 
       // returns if overlap really uses suffix of given read
       bool isReallyUsingSuffix(int readId) const;
+
+      int getLengthA() const;
+
+      int getLengthB() const;
   };
 }
 

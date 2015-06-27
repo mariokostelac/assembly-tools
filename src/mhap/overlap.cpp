@@ -9,64 +9,90 @@ using std::ostream;
 namespace MHAP {
 
   bool MhapOverlap::isUsingPrefix(int read_id) const {
-    if (isReallyUsingPrefix(read_id)) {
-      return true;
-    }
 
-    if (isReallyUsingSuffix(read_id)) {
-      return false;
-    }
-
-    // overlap does not use prefix nor suffix!
     if (read_id == a_id) {
-      int a_before = a_lo;
-      int a_after = a_len - a_hi;
+      if (getAHang() <= 0) return true;
 
-      return a_before < a_after;
     } else if (read_id == b_id) {
-      int b_before = b_lo;
-      int b_after = b_len - b_hi;
-      if (b_rc) {
-        std::swap(b_before, b_after);
-      }
-
-      return b_before < b_after;
-    } else {
-      assert(false);
+      if (b_rc == false && getAHang() >= 0) return true;
+      if (b_rc == true && getBHang() <= 0) return true;
     }
 
     return false;
   }
 
   bool MhapOverlap::isUsingSuffix(int read_id) const {
-    if (isReallyUsingSuffix(read_id)) {
-      return true;
-    }
 
-    if (isReallyUsingPrefix(read_id)) {
-      return false;
-    }
-
-    // overlap does not use prefix nor suffix!
     if (read_id == a_id) {
-      int a_before = a_lo;
-      int a_after = a_len - a_hi;
+      if (getBHang() >= 0) return true;
 
-      return a_before > a_after;
     } else if (read_id == b_id) {
-      int b_before = b_lo;
-      int b_after = b_len - b_hi;
-      if (b_rc) {
-        std::swap(b_before, b_after);
-      }
-
-      return b_before > b_after;
-    } else {
-      assert(false);
+      if (b_rc == false && getBHang() <= 0) return true;
+      if (b_rc == true && getAHang() >= 0) return true;
     }
 
     return false;
   }
+
+  //bool MhapOverlap::isUsingPrefix(int read_id) const {
+    //if (isReallyUsingPrefix(read_id)) {
+      //return true;
+    //}
+
+    //if (isReallyUsingSuffix(read_id)) {
+      //return false;
+    //}
+
+    //// overlap does not use prefix nor suffix!
+    //if (read_id == a_id) {
+      //int a_before = a_lo;
+      //int a_after = a_len - a_hi;
+
+      //return a_before < a_after;
+    //} else if (read_id == b_id) {
+      //int b_before = b_lo;
+      //int b_after = b_len - b_hi;
+      //if (b_rc) {
+        //std::swap(b_before, b_after);
+      //}
+
+      //return b_before < b_after;
+    //} else {
+      //assert(false);
+    //}
+
+    //return false;
+  //}
+
+  //bool MhapOverlap::isUsingSuffix(int read_id) const {
+    //if (isReallyUsingSuffix(read_id)) {
+      //return true;
+    //}
+
+    //if (isReallyUsingPrefix(read_id)) {
+      //return false;
+    //}
+
+    //// overlap does not use prefix nor suffix!
+    //if (read_id == a_id) {
+      //int a_before = a_lo;
+      //int a_after = a_len - a_hi;
+
+      //return a_before > a_after;
+    //} else if (read_id == b_id) {
+      //int b_before = b_lo;
+      //int b_after = b_len - b_hi;
+      //if (b_rc) {
+        //std::swap(b_before, b_after);
+      //}
+
+      //return b_before > b_after;
+    //} else {
+      //assert(false);
+    //}
+
+    //return false;
+  //}
 
   bool MhapOverlap::isReallyUsingPrefix(int read_id) const {
 
@@ -90,14 +116,42 @@ namespace MHAP {
     assert(false);
   }
 
-  int MhapOverlap::getLength(int read) const {
-    if (read == a_id) {
-      return a_hi - a_lo + 1;
-    } else if (read == b_id) {
-      return b_hi - b_lo + 1;
+  int MhapOverlap::getLength(int read_id) const {
+    if (read_id == a_id) {
+      return getLengthA();
+    } else if (read_id == b_id) {
+      return getLengthB();
     }
 
     assert(false);
+  }
+
+  int MhapOverlap::getLengthA() const {
+    assert(a_read != nullptr);
+
+    int len = a_read->getSequence().length();
+    if (getAHang() > 0) {
+      len -= getAHang();
+    }
+    if (getBHang() < 0) {
+      len -= abs(getBHang());
+    }
+
+    return len;
+  }
+
+  int MhapOverlap::getLengthB() const {
+    assert(b_read != nullptr);
+
+    int len = b_read->getSequence().length();
+    if (getAHang() < 0) {
+      len -= abs(getAHang());
+    }
+    if (getBHang() > 0) {
+      len -= getBHang();
+    }
+
+    return len;
   }
 
   int MhapOverlap::getLength() const {

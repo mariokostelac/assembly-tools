@@ -17,8 +17,8 @@ int MAX_DISTANCE = MAX_NODES * 10000;
 double MAX_DIFFERENCE = 0.25;
 
 // contig extraction params
-size_t MAX_BRANCHES = 20;
-size_t MAX_START_NODES = 24;
+size_t MAX_BRANCHES = 16;
+size_t MAX_START_NODES = 30;
 
 using std::cerr;
 using std::cin;
@@ -171,8 +171,8 @@ int main(int argc, char **argv) {
 
   for (const auto& component : components) {
 
-    //ContigExtractor* extractor = new ContigExtractor(component);
-    //extractor->extractContig();
+    ContigExtractor* extractor = new ContigExtractor(component);
+    extractor->extractContig();
 
     Contig* contig = component->createContig();
 
