@@ -161,7 +161,7 @@ int main(int argc, char **argv) {
   if (verbose_output) {
     vector<Overlap*> simplified_overlaps;
     graph->extractOverlaps(simplified_overlaps);
-    writeOverlaps(notransitives, "simplified.afg");
+    writeOverlaps(simplified_overlaps, "simplified.afg");
   }
 
   std::vector<StringGraphComponent*> components;
