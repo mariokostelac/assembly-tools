@@ -39,11 +39,11 @@ int main(int argc, char **argv) {
   const string contigs_filename = args.get<string>("contigs");
 
   vector<Contig*> contigs;
+  vector<Read*> tmp_reads;
   vector<Read*> reads;
-  vector<Read*> reads_mapped;
 
-  readFastaReads(reads, reads_filename.c_str());
-  map_reads(&reads_mapped, reads);
+  readFastaReads(tmp_reads, reads_filename.c_str());
+  map_reads(&reads, reads);
 
   readAfgContigs(contigs, contigs_filename.c_str());
 
@@ -54,6 +54,10 @@ int main(int argc, char **argv) {
 
   int id = 0;
   for (const auto& contig : contigs) {
+    for (const auto& part: contig->getParts()) {
+      assert(reads[part.src] != nullptr);
+    }
+
     std::string consensusSeq = consensus(contig, reads);
 
     if (!consensusSeq.empty()) {

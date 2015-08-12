@@ -183,7 +183,7 @@ int main(int argc, char **argv) {
     const auto& parts = contig->getParts();
     fprintf(stdout, "* %lu | ", parts.size());
     for (const auto& p: parts) {
-      fprintf(stdout, " %d", std::get<0>(p));
+      fprintf(stdout, " %d", p.src);
     }
     fprintf(stdout, "\n");
   }

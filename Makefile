@@ -4,6 +4,21 @@ CC = g++
 CFLAGS = -g -Wall -std=c++11 -O3 -I ./lib -I ./src -I ./
 LDFLAGS = -pthread
 
+UNAME_S := $(shell uname -s)
+versions := 0
+
+ifeq ($(UNAME_S),Darwin)
+	compiler := $(shell g++-4.8 --version 2>/dev/null)
+	ifdef compiler
+		CC = g++-4.8
+	endif
+
+	compiler := $(shell g++-4.9 --version 2>/dev/null)
+	ifdef compiler
+		CC = g++-4.9
+	endif
+endif
+
 default: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout bin/consensus
 
 lib:

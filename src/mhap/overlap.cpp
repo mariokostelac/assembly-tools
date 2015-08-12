@@ -10,10 +10,10 @@ namespace MHAP {
 
   bool MhapOverlap::isUsingPrefix(int read_id) const {
 
-    if (read_id == a_id) {
+    if (read_id == (int) a_id) {
       if (getAHang() <= 0) return true;
 
-    } else if (read_id == b_id) {
+    } else if (read_id == (int) b_id) {
       if (b_rc == false && getAHang() >= 0) return true;
       if (b_rc == true && getBHang() <= 0) return true;
     }
@@ -23,10 +23,10 @@ namespace MHAP {
 
   bool MhapOverlap::isUsingSuffix(int read_id) const {
 
-    if (read_id == a_id) {
+    if (read_id == (int) a_id) {
       if (getBHang() >= 0) return true;
 
-    } else if (read_id == b_id) {
+    } else if (read_id == (int) b_id) {
       if (b_rc == false && getBHang() <= 0) return true;
       if (b_rc == true && getAHang() >= 0) return true;
     }
@@ -117,9 +117,9 @@ namespace MHAP {
   }
 
   int MhapOverlap::getLength(int read_id) const {
-    if (read_id == a_id) {
+    if (read_id == (int) a_id) {
       return getLengthA();
-    } else if (read_id == b_id) {
+    } else if (read_id == (int) b_id) {
       return getLengthB();
     }
 
