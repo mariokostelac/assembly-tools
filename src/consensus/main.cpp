@@ -35,26 +35,30 @@ int main(int argc, char **argv) {
   args.add<string>("contigs", 'c', "contigs file", true);
   args.parse_check(argc, argv);
 
+  const int threadLen = std::max(std::thread::hardware_concurrency(), 1U);
   const string reads_filename = args.get<string>("reads");
   const string contigs_filename = args.get<string>("contigs");
 
   vector<Contig*> contigs;
-  vector<Read*> tmp_reads;
+  vector<Read*> orig_reads;
   vector<Read*> reads;
 
-  readFastaReads(tmp_reads, reads_filename.c_str());
-  map_reads(&reads, reads);
+  readFastaReads(orig_reads, reads_filename.c_str());
+  map_reads(&reads, orig_reads);
 
   readAfgContigs(contigs, contigs_filename.c_str());
 
-  std::cerr << "Read " << reads.size() << " reads" << std::endl;
+  std::cerr << "Read " << orig_reads.size() << " reads" << std::endl;
   std::cerr << "Read " << contigs.size() << " contigs" << std::endl;
 
   std::vector<Read*> transcripts;
 
+  createReverseComplements(reads, threadLen);
+
   int id = 0;
   for (const auto& contig : contigs) {
     for (const auto& part: contig->getParts()) {
+      assert(part.src < (int) reads.size());
       assert(reads[part.src] != nullptr);
     }
 
