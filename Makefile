@@ -4,7 +4,7 @@ CC = g++
 CFLAGS = -g -Wall -std=c++11 -O3 -I ./lib -I ./src -I ./
 LDFLAGS = -pthread
 
-default: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout
+default: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout bin/consensus
 
 lib:
 	make -C lib/ra
@@ -33,6 +33,10 @@ obj/layout_main.o: src/layout/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
+obj/consensus_main.o: src/consensus/main.cpp
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c -o $@ $^
+
 obj/overlap2dot_main.o: src/overlap2dot/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
@@ -50,6 +54,10 @@ bin/overlap2dot: obj/overlap2dot.o obj/overlap2dot_main.o obj/mhap/parser.o obj/
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 bin/layout: obj/layout_main.o obj/mhap/parser.o obj/mhap/overlap.o lib/ra/lib/libra.a
+	mkdir -p bin
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+bin/consensus: obj/consensus_main.o lib/ra/lib/libra.a
 	mkdir -p bin
 	$(CC) -o $@ $^ $(LDFLAGS)
 

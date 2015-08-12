@@ -172,9 +172,7 @@ int main(int argc, char **argv) {
   for (const auto& component : components) {
 
     ContigExtractor* extractor = new ContigExtractor(component);
-    extractor->extractContig();
-
-    Contig* contig = component->createContig();
+    const auto& contig = extractor->extractContig();
 
     if (contig == nullptr) {
       continue;
