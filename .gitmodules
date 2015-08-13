@@ -3,4 +3,4 @@
 	url = https://github.com/tanakh/cmdline.git
 [submodule "lib/ra"]
 	path = lib/ra
-	url = git@github.com:mariokostelac/ra.git
+	url = https://github.com/mariokostelac/ra.git
