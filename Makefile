@@ -1,7 +1,7 @@
 .PHONY: lib
 
 CC = g++
-CFLAGS = -g -Wall -std=c++11 -O3 -I ./lib -I ./src -I ./
+CFLAGS = -Wall -std=c++11 -O3 -I ./lib -I ./src -I ./
 LDFLAGS = -pthread
 
 UNAME_S := $(shell uname -s)
@@ -19,7 +19,13 @@ ifeq ($(UNAME_S),Darwin)
 	endif
 endif
 
-default: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout bin/consensus
+DEBUG := $(shell env | grep DEBUG | cut -d= -f2)
+ifeq ($(DEBUG),1)
+	CFLAGS += -g
+	CFLAGS += -DDEBUG
+endif
+
+all: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout bin/consensus
 
 lib:
 	make -C lib/ra
