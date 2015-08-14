@@ -11,12 +11,11 @@ namespace MHAP {
 
   class MhapOverlap: public Overlap {
     public:
-      MhapOverlap() {};
 
       MhapOverlap(uint32_t a_id, uint32_t b_id, double jaccard_score, uint32_t shared_minmers,
           bool a_rc, uint32_t a_lo, uint32_t a_hi, uint32_t a_len,
           bool b_rc, uint32_t b_lo, uint32_t b_hi, uint32_t b_len)
-        : a_id(a_id), b_id(b_id), jaccard_score(jaccard_score), shared_minmers(shared_minmers),
+        : Overlap(a_id, b_id), jaccard_score(jaccard_score), shared_minmers(shared_minmers),
         a_rc(a_rc), a_lo(a_lo), a_hi(a_hi), a_len(a_len),
         b_rc(b_rc), b_lo(b_lo), b_hi(b_hi), b_len(b_len) {
 
@@ -24,38 +23,6 @@ namespace MHAP {
         }
 
       ~MhapOverlap() {};
-
-      int getA() const {
-        return a_id;
-      }
-
-      void setA(int a) {
-        a_id = a;
-      }
-
-      Read* getReadA() const {
-        return a_read;
-      }
-
-      void setReadA(Read* read) {
-        a_read = read;
-      }
-
-      int getB() const {
-        return b_id;
-      }
-
-      void setB(int b) {
-        b_id = b;
-      }
-
-      Read* getReadB() const {
-        return b_read;
-      }
-
-      void setReadB(Read* read) {
-        b_read = read;
-      }
 
       int getLength() const;
 
@@ -84,8 +51,6 @@ namespace MHAP {
       void print(std::ostream& str) const;
 
     private:
-      uint32_t a_id;
-      uint32_t b_id;
       double jaccard_score;
       uint32_t shared_minmers;
       bool a_rc;
@@ -96,9 +61,6 @@ namespace MHAP {
       uint32_t b_lo;
       uint32_t b_hi;
       uint32_t b_len;
-
-      Read* a_read;
-      Read* b_read;
 
       uint32_t hangingLengthA() const;
       uint32_t hangingLengthB() const;
