@@ -4,9 +4,11 @@
 #include "mhap/parser.h"
 #include "ra/include/ra/ra.hpp"
 #include <algorithm>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <sys/stat.h>
 
 // trimming params
 int READ_LEN_THRESHOLD = 100000;
@@ -43,6 +45,25 @@ void map_reads(vector<Read*>* mapped, vector<Read*>& reads) {
   }
 }
 
+string output_dir_name() {
+  time_t rawtime;
+  struct tm* timeinfo;
+  char buffer[80];
+
+  time(&rawtime);
+  timeinfo = localtime(&rawtime);
+
+  strftime(buffer, 80, "layout_%Y%m%d_%H%M%S", timeinfo);
+  return string(buffer);
+}
+
+void must_mkdir(const string& path) {
+    if (mkdir(path.c_str(), 0755) == -1) {
+        fprintf(stderr, "Can't create directory %s\n", path.c_str());
+        exit(1);
+    }
+}
+
 int main(int argc, char **argv) {
 
   cmdline::parser args;
@@ -69,6 +90,7 @@ int main(int argc, char **argv) {
   const string overlaps_format = args.get<string>("overlaps_format");
   const bool verbose_output = args.get<bool>("verbose");
   const int reads_id_offset = args.get<int>("reads_id_offset");
+  const string output_dir = output_dir_name();
 
   MAX_NODES = args.get<int>("bp_max_nodes");
   MAX_DISTANCE = MAX_NODES * 10000;
@@ -77,6 +99,9 @@ int main(int argc, char **argv) {
   vector<Overlap*> overlaps, filtered;
   vector<Read*> reads;
   vector<Read*> reads_mapped;
+
+  must_mkdir(output_dir);
+  std::cerr << "Output dir: " << output_dir << std::endl;
 
   if (reads_format == "fasta") {
     readFastaReads(reads, reads_filename.c_str());
@@ -137,7 +162,7 @@ int main(int argc, char **argv) {
   }
 
   if (verbose_output) {
-    writeOverlaps(nocontainments, "nocont.afg");
+    writeOverlaps(nocontainments, (output_dir + "/nocont.afg").c_str());
   }
 
   vector<Overlap*> notransitives;
@@ -150,7 +175,7 @@ int main(int argc, char **argv) {
   }
 
   if (verbose_output) {
-    writeOverlaps(notransitives, "nocont.notran.afg");
+    writeOverlaps(notransitives, (output_dir + "/nocont.notran.afg").c_str());
   }
 
   createReverseComplements(reads, thread_num);
@@ -161,7 +186,7 @@ int main(int argc, char **argv) {
   if (verbose_output) {
     vector<Overlap*> simplified_overlaps;
     graph->extractOverlaps(simplified_overlaps);
-    writeOverlaps(simplified_overlaps, "simplified.afg");
+    writeOverlaps(simplified_overlaps, (output_dir + "/simplified.afg").c_str());
   }
 
   std::vector<StringGraphComponent*> components;
@@ -190,7 +215,7 @@ int main(int argc, char **argv) {
 
   std::cerr << "number of contigs " << contigs.size() << std::endl;
 
-  writeAfgContigs(contigs, "contigs.afg");
+  writeAfgContigs(contigs, (output_dir + "/contigs.afg").c_str());
 
   for (auto r: reads)      delete r;
   for (auto o: overlaps)   delete o;
