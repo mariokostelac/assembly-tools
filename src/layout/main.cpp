@@ -172,24 +172,12 @@ int main(int argc, char **argv) {
   vector<Overlap*> nocontainments;
   filterContainedOverlaps(nocontainments, overlaps, reads_mapped, true);
 
-  {
-    int filtered =  overlaps.size() - nocontainments.size();
-    cerr << "Removed " << filtered << " overlaps as contained "
-      << "(" << (1.*filtered)/overlaps.size() << ")" << endl;
-  }
-
   if (verbose_output) {
     writeOverlaps(nocontainments, (output_dir + "/nocont.afg").c_str());
   }
 
   vector<Overlap*> notransitives;
   filterTransitiveOverlaps(notransitives, nocontainments, thread_num, true);
-
-  {
-    int filtered = nocontainments.size() - notransitives.size();
-    cerr << "Removed " << filtered << " overlaps as transitive "
-      << "(" << (1.*filtered)/nocontainments.size() << ")" << endl;
-  }
 
   if (verbose_output) {
     writeOverlaps(notransitives, (output_dir + "/nocont.notran.afg").c_str());
