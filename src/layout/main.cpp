@@ -64,6 +64,23 @@ void must_mkdir(const string& path) {
     }
 }
 
+void print_contigs_info(const vector<Contig *>& contigs, const vector<Read*>& reads) {
+
+  for (uint32_t i = 0; i < contigs.size(); ++i) {
+    const auto& contig = contigs[i];
+    const auto& parts = contig->getParts();
+    const auto& last_part = contig->getParts().back();
+
+    fprintf(stdout, "contig %u; length: ≈%lu, reads: %lu\n",
+        i, last_part.offset + reads[last_part.src]->getLength(), parts.size()
+    );
+    for (const auto& p: parts) {
+      fprintf(stdout, "%d ", p.src);
+    }
+    fprintf(stdout, "\n");
+  }
+}
+
 int main(int argc, char **argv) {
 
   cmdline::parser args;
@@ -204,16 +221,10 @@ int main(int argc, char **argv) {
     }
 
     contigs.emplace_back(contig);
-
-    const auto& parts = contig->getParts();
-    fprintf(stdout, "* %lu | ", parts.size());
-    for (const auto& p: parts) {
-      fprintf(stdout, " %d", p.src);
-    }
-    fprintf(stdout, "\n");
   }
 
   std::cerr << "number of contigs " << contigs.size() << std::endl;
+  print_contigs_info(contigs, reads_mapped);
 
   writeAfgContigs(contigs, (output_dir + "/contigs.afg").c_str());
 
