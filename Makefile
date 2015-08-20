@@ -25,7 +25,7 @@ ifeq ($(DEBUG),1)
 	CFLAGS += -DDEBUG
 endif
 
-all: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout bin/consensus
+all: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout bin/consensus bin/zoom
 
 lib:
 	make -C lib/ra
@@ -62,6 +62,10 @@ obj/overlap2dot_main.o: src/overlap2dot/main.cpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $^
 
+obj/zoom_main.o: src/zoom/main.cpp
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c -o $@ $^
+
 bin/filter-contained: obj/filter_contained_main.o obj/mhap/parser.o obj/mhap/overlap.o lib/ra/lib/libra.a
 	mkdir -p bin
 	$(CC) -o $@ $^ $(LDFLAGS)
@@ -79,6 +83,10 @@ bin/layout: obj/layout_main.o obj/mhap/parser.o obj/mhap/overlap.o lib/ra/lib/li
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 bin/consensus: obj/consensus_main.o lib/ra/lib/libra.a
+	mkdir -p bin
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+bin/zoom: obj/zoom_main.o obj/mhap/parser.o obj/mhap/overlap.o lib/ra/lib/libra.a
 	mkdir -p bin
 	$(CC) -o $@ $^ $(LDFLAGS)
 
