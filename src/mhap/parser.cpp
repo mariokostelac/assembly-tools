@@ -20,7 +20,7 @@ namespace MHAP {
     uint32_t b_hi;
     uint32_t b_len;
 
-    while (!input.eof() && !input.fail()) {
+    while (true) {
       input >> a_id >> b_id >> jaccard_score >> shared_minmers;
       input >> a_fwd >> a_lo >> a_hi >> a_len;
       input >> b_fwd >> b_lo >> b_hi >> b_len;
@@ -29,6 +29,10 @@ namespace MHAP {
           a_id, b_id, jaccard_score, shared_minmers,
           a_fwd, a_lo, a_hi, a_len,
           b_fwd, b_lo, b_hi, b_len);
+
+      if (input.fail()) {
+        break;
+      }
 
       overlaps->push_back(overlap);
       read++;
