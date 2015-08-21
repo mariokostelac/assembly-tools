@@ -199,7 +199,14 @@ int main(int argc, char **argv) {
 
   std::vector<Contig*> contigs;
 
+  auto contigs_fast = fopen((output_dir + "/contigs_fast.fasta").c_str(), "w");
+  int idx = 0;
   for (const auto& component : components) {
+    string seq;
+    component->extractSequence(seq);
+    fprintf(contigs_fast, ">seq%d\n", idx);
+    fprintf(contigs_fast, "%s\n", seq.c_str());
+    idx++;
 
     ContigExtractor* extractor = new ContigExtractor(component);
     const auto& contig = extractor->extractContig();
@@ -210,6 +217,7 @@ int main(int argc, char **argv) {
 
     contigs.emplace_back(contig);
   }
+  fclose(contigs_fast);
 
   std::cerr << "number of contigs " << contigs.size() << std::endl;
   print_contigs_info(contigs, reads_mapped);
