@@ -14,12 +14,12 @@
 int READ_LEN_THRESHOLD = 100000;
 
 // BFS params in bubble popping
-size_t MAX_NODES = 750;
+size_t MAX_NODES = 100;
 int MAX_DISTANCE = MAX_NODES * 10000;
 double MAX_DIFFERENCE = 0.25;
 
 // contig extraction params
-size_t MAX_BRANCHES = 16;
+size_t MAX_BRANCHES = 18;
 size_t MAX_START_NODES = 30;
 
 using std::cerr;
@@ -168,6 +168,19 @@ int main(int argc, char **argv) {
   }
 
   cerr << overlaps.size() << " overlaps read" << endl;
+
+  int skipped = 0;
+  for (uint32_t i = 0; i < overlaps.size(); ++i) {
+    const auto o = overlaps[i];
+
+    if (o->getReadA()->getLength() < 3000 || o->getReadB()->getLength() < 3000) {
+      skipped++;
+      continue;
+    }
+
+    overlaps[i - skipped] = overlaps[i];
+  }
+  overlaps.resize(overlaps.size() - skipped);
 
   vector<Overlap*> nocontainments;
   filterContainedOverlaps(nocontainments, overlaps, reads_mapped, true);
