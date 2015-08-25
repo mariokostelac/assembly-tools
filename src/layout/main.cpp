@@ -15,13 +15,13 @@ int READ_LEN_THRESHOLD = 100000;
 uint32_t MAX_READS_IN_TIP = 2;
 
 // BFS params in bubble popping
-size_t MAX_NODES = 100;
+size_t MAX_NODES = 2000;
 int MAX_DISTANCE = MAX_NODES * 10000;
 double MAX_DIFFERENCE = 0.25;
 
 // contig extraction params
 size_t MAX_BRANCHES = 18;
-size_t MAX_START_NODES = 30;
+size_t MAX_START_NODES = 100;
 
 using std::cerr;
 using std::cin;

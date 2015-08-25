@@ -8,6 +8,10 @@ using std::ostream;
 
 namespace MHAP {
 
+  int MhapOverlap::getScore() const {
+    return ((a_hi-a_lo)/(double)a_len + (b_hi-b_lo)/(double)b_len) * 1000;
+  }
+
   bool MhapOverlap::isUsingPrefix(int read_id) const {
 
     if (read_id == (int) getA()) {

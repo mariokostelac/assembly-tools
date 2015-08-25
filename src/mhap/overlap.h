@@ -32,6 +32,8 @@ namespace MHAP {
 
       int getBHang() const;
 
+      int getScore() const;
+
       bool isInnie() const;
 
       // checks whether the start of read is contained in overlap
