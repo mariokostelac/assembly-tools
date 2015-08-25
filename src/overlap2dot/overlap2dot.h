@@ -30,7 +30,7 @@ int dot_graph(ostream& output, vector<V>& overlaps) {
     string tail_style = get_edge_style(overlap->isUsingPrefix(a_id), overlap->isUsingSuffix(a_id));
     string head_style = get_edge_style(overlap->isUsingPrefix(b_id), overlap->isUsingSuffix(b_id));
 
-    output << "dir=both arrowtail=" << tail_style << " arrowhead=" << head_style << "];" << endl;
+    output << "dir=both arrowtail=" << tail_style << " arrowhead=" << head_style << ", label=\"" << overlap->getScore() << "\"];" << endl;
     lines++;
   }
 
