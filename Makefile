@@ -1,4 +1,4 @@
-.PHONY: lib
+.PHONY: lib get-deps
 
 CC = g++
 CFLAGS = -Wall -std=c++11 -O3 -I ./lib -I ./src -I ./
@@ -29,6 +29,10 @@ GIT_VERSION := $(shell git describe --dirty --always --tags)
 CFLAGS += -DVERSION=\"$(GIT_VERSION)\"
 
 all: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout bin/consensus bin/zoom
+
+get-deps:
+	@echo "getting deps..."
+	@git submodule update --init
 
 lib:
 	make -C lib/ra
