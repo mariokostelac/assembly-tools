@@ -17,7 +17,5 @@ make
 - [filter-transitive](help/filter-transitive.md) - filters transitive overlaps
 
 ## General requirements
-- make
-- gcc
-
-
+- GNU make
+- g++ (4.8 or higher)
