@@ -1,4 +1,8 @@
 
+#ifndef VERSION
+#define VERSION "NO_VESION"
+#endif
+
 #include "cmdline/cmdline.h"
 #include "mhap/overlap.h"
 #include "mhap/parser.h"
@@ -164,6 +168,10 @@ void write_settings(FILE *fd) {
   fprintf(fd, "\n");
 }
 
+void write_version(FILE* fd) {
+  fprintf(fd, "# version: %s\n", VERSION);
+}
+
 int main(int argc, char **argv) {
 
   init_args(argc, argv);
@@ -174,9 +182,10 @@ int main(int argc, char **argv) {
   must_mkdir(output_dir);
   std::cerr << "Output dir: " << output_dir << std::endl;
 
-  auto settings_file = must_fopen((output_dir + "/run_args.txt").c_str(), "w");
-  write_settings(settings_file);
-  fclose(settings_file);
+  auto run_args_file = must_fopen((output_dir + "/run_args.txt").c_str(), "w");
+  write_version(run_args_file);
+  write_settings(run_args_file);
+  fclose(run_args_file);
 
   vector<Overlap*> overlaps, filtered;
   vector<Read*> reads;

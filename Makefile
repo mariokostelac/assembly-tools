@@ -25,6 +25,9 @@ ifeq ($(DEBUG),1)
 	CFLAGS += -DDEBUG
 endif
 
+GIT_VERSION := $(shell git describe --dirty --always --tags)
+CFLAGS += -DVERSION=\"$(GIT_VERSION)\"
+
 all: lib bin/filter-contained bin/filter-transitive bin/overlap2dot bin/layout bin/consensus bin/zoom
 
 lib:
