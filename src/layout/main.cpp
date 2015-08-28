@@ -26,6 +26,9 @@ size_t MAX_START_NODES = 100;
 double LENGTH_THRESHOLD = 0.2;
 double QUALITY_THRESHOLD = 0.2;
 
+// filter reads param
+size_t READS_MIN_LEN = 3000;
+
 using std::cerr;
 using std::cin;
 using std::cout;
@@ -177,7 +180,7 @@ int main(int argc, char **argv) {
   for (uint32_t i = 0; i < overlaps.size(); ++i) {
     const auto o = overlaps[i];
 
-    if (o->getReadA()->getLength() < 3000 || o->getReadB()->getLength() < 3000) {
+    if (o->getReadA()->getLength() < READS_MIN_LEN || o->getReadB()->getLength() < READS_MIN_LEN) {
       skipped++;
       continue;
     }
