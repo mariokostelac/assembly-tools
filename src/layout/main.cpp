@@ -10,6 +10,15 @@
 #include <vector>
 #include <sys/stat.h>
 
+using std::cerr;
+using std::cin;
+using std::cout;
+using std::endl;
+using std::fstream;
+using std::max;
+using std::string;
+using std::vector;
+
 // trimming params
 int READ_LEN_THRESHOLD = 100000;
 uint32_t MAX_READS_IN_TIP = 2;
@@ -29,14 +38,15 @@ double QUALITY_THRESHOLD = 0.2;
 // filter reads param
 size_t READS_MIN_LEN = 3000;
 
-using std::cerr;
-using std::cin;
-using std::cout;
-using std::endl;
-using std::fstream;
-using std::max;
-using std::string;
-using std::vector;
+// global vars
+cmdline::parser args;
+int thread_num;
+string reads_filename;
+string reads_format;
+string overlaps_filename;
+string overlaps_format;
+bool verbose_output;
+int reads_id_offset;
 
 // map reads so we can access reads with mapped[read_id]
 void map_reads(vector<Read*>* mapped, vector<Read*>& reads) {
@@ -88,10 +98,7 @@ void print_contigs_info(const vector<Contig *>& contigs, const vector<Read*>& re
   }
 }
 
-int main(int argc, char **argv) {
-
-  cmdline::parser args;
-
+void init_args(int argc, char** argv) {
   // input params
   args.add<string>("reads", 'r', "reads file", true);
   args.add<string>("reads_format", 's', "reads format; supported: fasta, fastq, afg", false, "fasta");
@@ -106,26 +113,74 @@ int main(int argc, char **argv) {
   args.add<double>("bp_max_diff", 'n', "max difference between bubble branches", false, 0.25);
 
   args.parse_check(argc, argv);
+}
 
-  const int thread_num = std::max(std::thread::hardware_concurrency(), 1U);
-  const string reads_filename = args.get<string>("reads");
-  const string reads_format = args.get<string>("reads_format");
-  const string overlaps_filename = args.get<string>("overlaps");
-  const string overlaps_format = args.get<string>("overlaps_format");
-  const bool verbose_output = args.get<bool>("verbose");
-  const int reads_id_offset = args.get<int>("reads_id_offset");
-  const string output_dir = output_dir_name();
+void read_args() {
+  thread_num = std::max(std::thread::hardware_concurrency(), 1U);
+  reads_filename = args.get<string>("reads");
+  reads_format = args.get<string>("reads_format");
+  overlaps_filename = args.get<string>("overlaps");
+  overlaps_format = args.get<string>("overlaps_format");
+  verbose_output = args.get<bool>("verbose");
+  reads_id_offset = args.get<int>("reads_id_offset");
 
   MAX_NODES = args.get<int>("bp_max_nodes");
   MAX_DISTANCE = MAX_NODES * 10000;
   MAX_DIFFERENCE = args.get<double>("bp_max_diff");
+}
+
+FILE* must_fopen(const char* path, const char* mode) {
+  FILE* res = fopen(path, mode);
+  if (res == nullptr) {
+    fprintf(stderr, "Cannot open %s with mode %s\n", path, mode);
+    exit(1);
+  }
+
+  return res;
+}
+
+void write_settings(FILE *fd) {
+  fprintf(fd, "# filter reads parameters\n");
+  fprintf(fd, "READS_MIN_LEN: %lu\n", READS_MIN_LEN);
+  fprintf(fd, "\n");
+
+  fprintf(fd, "# trimming parameters\n");
+  fprintf(fd, "READ_LEN_THRESHOLD: %d\n", READ_LEN_THRESHOLD);
+  fprintf(fd, "MAX_READS_IN_TIP: %d\n", MAX_READS_IN_TIP);
+  fprintf(fd, "MAX_DEPTH_WITHOUT_EXTRA_FORK: %d\n", MAX_DEPTH_WITHOUT_EXTRA_FORK);
+  fprintf(fd, "\n");
+
+  fprintf(fd, "# bubble popping parameters\n");
+  fprintf(fd, "MAX_NODES: %lu\n", MAX_NODES);
+  fprintf(fd, "MAX_DISTANCE: %d\n", MAX_DISTANCE);
+  fprintf(fd, "MAX_DIFFERENCE: %f\n", MAX_DIFFERENCE);
+  fprintf(fd, "\n");
+
+  fprintf(fd, "# contig extraction parameters\n");
+  fprintf(fd, "MAX_BRANCHES: %lu\n", MAX_BRANCHES);
+  fprintf(fd, "MAX_START_NODES: %lu\n", MAX_START_NODES);
+  fprintf(fd, "LENGTH_THRESHOLD: %f\n", LENGTH_THRESHOLD);
+  fprintf(fd, "QUALITY_THRESHOLD: %f\n", QUALITY_THRESHOLD);
+  fprintf(fd, "\n");
+}
+
+int main(int argc, char **argv) {
+
+  init_args(argc, argv);
+  read_args();
+
+  string output_dir = output_dir_name();
+
+  must_mkdir(output_dir);
+  std::cerr << "Output dir: " << output_dir << std::endl;
+
+  auto settings_file = must_fopen((output_dir + "/run_args.txt").c_str(), "w");
+  write_settings(settings_file);
+  fclose(settings_file);
 
   vector<Overlap*> overlaps, filtered;
   vector<Read*> reads;
   vector<Read*> reads_mapped;
-
-  must_mkdir(output_dir);
-  std::cerr << "Output dir: " << output_dir << std::endl;
 
   if (reads_format == "fasta") {
     readFastaReads(reads, reads_filename.c_str());
@@ -219,7 +274,7 @@ int main(int argc, char **argv) {
 
   std::vector<Contig*> contigs;
 
-  auto contigs_fast = fopen((output_dir + "/contigs_fast.fasta").c_str(), "w");
+  auto contigs_fast = must_fopen((output_dir + "/contigs_fast.fasta").c_str(), "w");
   int idx = 0;
   for (const auto& component : components) {
     string seq;
