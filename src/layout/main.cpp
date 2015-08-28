@@ -172,6 +172,14 @@ void write_version(FILE* fd) {
   fprintf(fd, "# version: %s\n", VERSION);
 }
 
+void write_call_cmd(FILE* fd, int argc, char **argv) {
+  fprintf(fd, "#");
+  for (int i = 0; i < argc; ++i) {
+    fprintf(fd, "%s ", argv[i]);
+  }
+  fprintf(fd, "\n");
+}
+
 int main(int argc, char **argv) {
 
   init_args(argc, argv);
@@ -184,6 +192,7 @@ int main(int argc, char **argv) {
 
   auto run_args_file = must_fopen((output_dir + "/run_args.txt").c_str(), "w");
   write_version(run_args_file);
+  write_call_cmd(run_args_file, argc, argv);
   write_settings(run_args_file);
   fclose(run_args_file);
 
