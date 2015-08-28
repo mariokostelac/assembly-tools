@@ -23,6 +23,8 @@ double MAX_DIFFERENCE = 0.25;
 // contig extraction params
 size_t MAX_BRANCHES = 18;
 size_t MAX_START_NODES = 100;
+double LENGTH_THRESHOLD = 0.2;
+double QUALITY_THRESHOLD = 0.2;
 
 using std::cerr;
 using std::cin;
