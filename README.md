@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/mariokostelac/assembly-tools.svg?branch=master)](https://travis-ci.org/mariokostelac/assembly-tools)
 # assembly-tools
 Useful tools for assembling the genome
 
