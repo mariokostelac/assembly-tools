@@ -3,21 +3,6 @@
 CXXFLAGS = -Wall -std=c++0x -O3 -I ./lib -I ./src -I ./
 LDFLAGS = -pthread
 
-UNAME_S := $(shell uname -s)
-versions := 0
-
-ifeq ($(UNAME_S),Darwin)
-	compiler := $(shell g++-4.8 --version 2>/dev/null)
-	ifdef compiler
-		CXX = g++-4.8
-	endif
-
-	compiler := $(shell g++-4.9 --version 2>/dev/null)
-	ifdef compiler
-		CXX = g++-4.9
-	endif
-endif
-
 DEBUG := $(shell env | grep DEBUG | cut -d= -f2)
 ifeq ($(DEBUG),1)
 	CXXFLAGS += -g
